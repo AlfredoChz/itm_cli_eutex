@@ -1,58 +1,91 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# EUTEX - Confección y Distribución de Uniformes Industriales
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Plataforma web desarrollada en **Laravel 12** inspirada en el estándar de diseño corporativo e industrial de SGIS Perú, adaptada y personalizada para **EUTEX**, empresa líder en confección textil y dotación de prendas técnicas para los sectores de minería, construcción, logística, hidrocarburos e industria pesada en el Perú.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🚀 Características Principales
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **Banner Panorámico 100% Ancho Completo**: Slider horizontal de alta definición directamente debajo del menú de navegación.
+- **Catálogo de Productos Industriales**:
+  - Polos manga larga piqué 100% algodón (gama de 10 colores corporativos).
+  - Chalecos de seguridad de alta visibilidad con certificación ANSI/ISEA 107.
+  - Jeans industriales 14 oz con cintas reflectivas 3M de 2 pulgadas.
+  - Camisas de trabajo, pantalones multibolsillo, mamelucos térmicos e ignífugos.
+- **Buscador en Vivo Modal (AJAX + Alpine.js)** con autocompletado y atajo de teclado (`Ctrl + K`).
+- **Sistema Integral de Cotización Rápida**:
+  - Drawer modal interactivo para solicitar presupuestos por volumen.
+  - Registro automático en base de datos SQLite.
+  - Generación instantánea de enlace y mensaje formateado para **WhatsApp directo** (`+51 920 783 202`).
+- **Secciones Corporativas**:
+  - Nosotros, Filosofía y Capacidad de Producción en Gamarra.
+  - Servicios: Bordado computarizado, estampado serigráfico de alta durabilidad, desarrollo textil a medida y distribución a nivel nacional.
+  - Blog Técnico: Artículos especializados en normativas de seguridad laboral, selección de telas industriales y certificaciones ANSI/NTP.
+  - Libro de Reclamaciones conforme a las disposiciones de INDECOPI.
+- **Diseño Responsivo y Moderno**: Paleta de color industrial (Azul Marino Profundo `#0B1B3D`, Naranja Seguridad `#FF5500`), tipografía Inter/Montserrat, micro-animaciones y soporte móvil completo.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 🛠️ Stack Tecnológico
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- **Backend**: [Laravel 12](https://laravel.com/) (PHP 8.2+)
+- **Frontend**: Blade Components, [Tailwind CSS v4](https://tailwindcss.com/), [Alpine.js](https://alpinejs.dev/)
+- **Base de Datos**: SQLite (compatible con MySQL/PostgreSQL sin cambios)
+- **Empaquetador**: [Vite](https://vitejs.dev/)
+- **Iconografía**: SVG Vectorial integrado y Lucide Icons
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+## 💻 Instalación y Puesta en Marcha Local
 
-## Agentic Development
+1. **Clonar el repositorio**:
+   ```bash
+   git clone https://github.com/AlfredoChz/itm_cli_eutex.git
+   cd itm_cli_eutex
+   ```
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+2. **Instalar dependencias de PHP**:
+   ```bash
+   composer install
+   ```
 
-```bash
-composer require laravel/boost --dev
+3. **Configurar el archivo de entorno**:
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
 
-php artisan boost:install
-```
+4. **Ejecutar migraciones y datos de prueba (Seeders)**:
+   ```bash
+   touch database/database.sqlite
+   php artisan migrate --seed
+   ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+5. **Instalar dependencias de Frontend y compilar activos**:
+   ```bash
+   npm install
+   npm run build
+   ```
+   *(O `npm run dev` para desarrollo en vivo)*
 
-## Contributing
+6. **Iniciar el servidor local**:
+   ```bash
+   php artisan serve
+   ```
+   Acceder a la aplicación en: `http://localhost:8000` o `http://eutex.test` en entornos Laragon.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+---
 
-## Code of Conduct
+## 📞 Datos de Contacto de la Empresa
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- **Razón Comercial**: EUTEX - Uniformes Industriales
+- **Teléfono / WhatsApp**: [+51 920 783 202](https://wa.me/51920783202)
+- **Correos Electrónicos**: `eutex@ventas.com` / `e20huaccachi@gmail.com`
+- **Ubicación**: Jr. Gamarra, La Victoria, Lima - Perú
+- **Cobertura**: Envíos y despachos a todo el Perú
 
-## Security Vulnerabilities
+---
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## 📄 Licencia
 
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Este proyecto está bajo la licencia [MIT](LICENSE).
