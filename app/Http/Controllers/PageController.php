@@ -95,14 +95,4 @@ class PageController extends Controller
 
         return back()->with('success', "Su reclamo ha sido registrado exitosamente con el código: {$ticketCode}. En un plazo máximo de 15 días hábiles recibirá respuesta a su correo.");
     }
-
-    public function politicas()
-    {
-        return view('pages.politicas');
-    }
-
-    public function terminos()
-    {
-        return view('pages.terminos');
-    }
 }

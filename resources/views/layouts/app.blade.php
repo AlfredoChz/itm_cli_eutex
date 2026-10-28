@@ -368,11 +368,6 @@
                             </div>
                         </div>
                     </a>
-
-                    <div class="pt-2 flex gap-4 text-xs">
-                        <a href="{{ route('politicas') }}" class="text-slate-400 hover:text-white underline">Políticas</a>
-                        <a href="{{ route('terminos') }}" class="text-slate-400 hover:text-white underline">Términos y Condiciones</a>
-                    </div>
                 </div>
             </div>
 

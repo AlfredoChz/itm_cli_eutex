@@ -35,5 +35,3 @@ Route::post('/cotizacion', [QuoteController::class, 'store'])->name('quote.store
 // Legal & Compliance
 Route::get('/libro-de-reclamaciones', [PageController::class, 'libroReclamaciones'])->name('libro-reclamaciones');
 Route::post('/libro-de-reclamaciones', [PageController::class, 'storeLibroReclamaciones'])->name('libro-reclamaciones.store');
-Route::get('/politicas-privacidad', [PageController::class, 'politicas'])->name('politicas');
-Route::get('/terminos-condiciones', [PageController::class, 'terminos'])->name('terminos');
