@@ -5,120 +5,223 @@
 
 @section('content')
 
-<!-- HERO SECTION -->
-<section class="relative bg-eutex-navy text-white overflow-hidden py-16 lg:py-24 border-b border-white/10">
+<!-- HERO SECTION CON BANNER HORIZONTAL -->
+<section class="relative bg-eutex-navy text-white overflow-hidden pt-10 pb-16 border-b border-white/10"
+         x-data="{
+            currentSlide: 0,
+            slides: [
+                {
+                    title: 'Línea Completa de Uniformes Industriales',
+                    subtitle: 'Polos, chalecos de seguridad, jeans 14 oz y pantalones cargo para minería y construcción',
+                    image: '{{ asset('images/eutex/banner_principal.png') }}',
+                    badge: 'Banner Oficial EUTEX',
+                    ctaText: 'Cotizar Catálogo Completo',
+                    ctaUrl: 'https://wa.me/51920783202?text={{ urlencode('Hola EUTEX, deseo cotizar uniformes industriales del banner principal.') }}'
+                },
+                {
+                    title: 'Polos Manga Larga Cuello Redondo • 10 Colores',
+                    subtitle: '100% Algodón peinado, cuello reforzado, puños en rib y basta con doble costura',
+                    image: '{{ asset('images/eutex/polos_manga_larga.png') }}',
+                    badge: '10 Colores en Stock',
+                    ctaText: 'Cotizar Polos Manga Larga',
+                    ctaUrl: '{{ route('products.show', 'polo-manga-larga-industrial-cuello-redondo') }}'
+                },
+                {
+                    title: 'Chalecos de Seguridad & Tipo Geólogo Multibolsillos',
+                    subtitle: 'Cintas reflectivas de 5 cm (Norma ANSI 107), cierre tractor reforzado y 4 colores',
+                    image: '{{ asset('images/eutex/chalecos_seguridad.png') }}',
+                    badge: 'Alta Visibilidad ANSI / NTP',
+                    ctaText: 'Ver Modelos de Chalecos',
+                    ctaUrl: '{{ route('products.show', 'chaleco-seguridad-tipo-geologo-multibolsillos') }}'
+                },
+                {
+                    title: 'Jeans Industriales 14 oz con Cinta Reflectiva',
+                    subtitle: 'Denim pesado 100% algodón, triple costura de cadeneta en entrepierna y bolsillos profundos',
+                    image: '{{ asset('images/eutex/jeans_industriales.png') }}',
+                    badge: 'Denim 14 oz Pesado',
+                    ctaText: 'Ver Detalles del Jean',
+                    ctaUrl: '{{ route('products.show', 'pantalon-jean-industrial-14oz-cinta-reflectiva') }}'
+                },
+                {
+                    title: 'Atención al Cliente & Ventas Directas en Gamarra',
+                    subtitle: 'Teléfono / WhatsApp: 920 783 202 • Correos: eutex@ventas.com | e20huaccachi@gmail.com',
+                    image: '{{ asset('images/eutex/tarjeta_contacto.png') }}',
+                    badge: 'Atención Directa',
+                    ctaText: 'Contactar a Ventas',
+                    ctaUrl: 'https://wa.me/51920783202?text={{ urlencode('Hola EUTEX, deseo contactar con un asesor de ventas.') }}'
+                }
+            ],
+            autoplayInterval: null,
+            startAutoplay() {
+                this.autoplayInterval = setInterval(() => {
+                    this.nextSlide();
+                }, 5500);
+            },
+            stopAutoplay() {
+                if (this.autoplayInterval) {
+                    clearInterval(this.autoplayInterval);
+                }
+            },
+            nextSlide() {
+                this.currentSlide = (this.currentSlide + 1) % this.slides.length;
+            },
+            prevSlide() {
+                this.currentSlide = (this.currentSlide - 1 + this.slides.length) % this.slides.length;
+            }
+         }"
+         x-init="startAutoplay()"
+         @mouseenter="stopAutoplay()"
+         @mouseleave="startAutoplay()">
+    
     <!-- Decorative background patterns -->
     <div class="absolute inset-0 opacity-10 pointer-events-none bg-[radial-gradient(#f59e0b_1px,transparent_1px)] [background-size:24px_24px]"></div>
-    <div class="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-amber-500/15 blur-3xl pointer-events-none"></div>
-    <div class="absolute -bottom-24 -left-24 w-96 h-96 rounded-full bg-blue-600/20 blur-3xl pointer-events-none"></div>
+    <div class="absolute -top-32 -right-32 w-96 h-96 rounded-full bg-amber-500/15 blur-3xl pointer-events-none"></div>
+    <div class="absolute -bottom-32 -left-32 w-96 h-96 rounded-full bg-blue-600/20 blur-3xl pointer-events-none"></div>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        
+        <!-- ENCABEZADO SUPERIOR DEL HERO -->
+        <div class="text-center max-w-4xl mx-auto mb-8 space-y-3">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/20 text-amber-400 text-xs font-semibold backdrop-blur-sm shadow-sm">
+                <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+                <span>Fabricantes Directos en Gamarra • Norma ANSI / NTP • Calidad Certificada</span>
+            </div>
+
+            <h1 class="font-heading font-black text-2xl sm:text-4xl md:text-5xl tracking-tight leading-tight text-white">
+                Confección y Suministro de <br class="hidden sm:inline">
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-200">
+                    Uniformes Industriales
+                </span> y Ropa de Trabajo
+            </h1>
+
+            <p class="text-xs sm:text-base text-slate-300 max-w-2xl mx-auto leading-relaxed">
+                Prendas de alta resistencia mecánica, algodón peinado y cintas reflectivas 3M para minería, construcción y manufactura. Venta al por mayor y menor en Lima y provincias.
+            </p>
+        </div>
+
+        <!-- CONTENEDOR DEL BANNER HORIZONTAL PRINCIPAL (SLIDER FULL-WIDTH) -->
+        <div class="relative rounded-3xl overflow-hidden shadow-2xl border-2 border-white/20 bg-slate-950 group">
             
-            <!-- Columna Texto & CTAs -->
-            <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+            <!-- Vista panorámica horizontal -->
+            <div class="relative w-full aspect-[16/8] sm:aspect-[21/9] md:aspect-[24/9] max-h-[520px] overflow-hidden bg-slate-900 flex items-center justify-center">
                 
-                <!-- Badge Superior -->
-                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/20 text-amber-400 text-xs font-semibold backdrop-blur-sm">
-                    <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
-                    <span>Fabricantes Directos en Gamarra • Norma ANSI / NTP</span>
+                <template x-for="(slide, index) in slides" :key="index">
+                    <div x-show="currentSlide === index"
+                         x-transition:enter="transition ease-out duration-500"
+                         x-transition:enter-start="opacity-0 scale-98"
+                         x-transition:enter-end="opacity-100 scale-100"
+                         x-transition:leave="transition ease-in duration-300"
+                         x-transition:leave-start="opacity-100 scale-100"
+                         x-transition:leave-end="opacity-0 scale-98"
+                         class="absolute inset-0 w-full h-full">
+                        
+                        <!-- Imagen horizontal extendida -->
+                        <img :src="slide.image" 
+                             :alt="slide.title" 
+                             class="w-full h-full object-contain sm:object-cover sm:object-center bg-slate-950">
+
+                        <!-- Overlay gradiente sutil inferior -->
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent pointer-events-none"></div>
+
+                        <!-- Barra de información inferior del banner horizontal -->
+                        <div class="absolute bottom-0 inset-x-0 p-4 sm:p-6 lg:p-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4 pointer-events-auto">
+                            <div class="space-y-1.5 max-w-xl text-left drop-shadow-md">
+                                <span class="px-3 py-1 rounded-full bg-amber-400 text-slate-950 text-[11px] font-extrabold uppercase tracking-wider inline-block"
+                                      x-text="slide.badge"></span>
+                                <h3 class="font-heading font-black text-base sm:text-xl md:text-2xl text-white leading-snug drop-shadow" 
+                                    x-text="slide.title"></h3>
+                                <p class="text-xs sm:text-sm text-slate-200 line-clamp-1 sm:line-clamp-2" 
+                                   x-text="slide.subtitle"></p>
+                            </div>
+
+                            <div class="flex items-center gap-3 shrink-0">
+                                <a :href="slide.ctaUrl" 
+                                   class="px-5 py-2.5 sm:px-6 sm:py-3 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-heading font-extrabold text-xs sm:text-sm shadow-xl shadow-amber-500/30 transition-all flex items-center gap-2 transform hover:-translate-y-0.5">
+                                    <svg class="w-4 h-4 text-slate-950" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                    <span x-text="slide.ctaText"></span>
+                                </a>
+
+                                <button @click="$store.quoteCart.open()"
+                                        class="hidden md:inline-flex px-4 py-3 rounded-xl bg-white/20 hover:bg-white/30 text-white font-heading font-bold text-xs backdrop-blur-md transition-all">
+                                    Presupuesto Rápido
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </template>
+
+            </div>
+
+            <!-- Flechas de navegación (Izquierda / Derecha) -->
+            <button @click="prevSlide()" 
+                    class="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-slate-950/60 hover:bg-amber-400 hover:text-slate-950 text-white border border-white/20 flex items-center justify-center transition-all opacity-80 group-hover:opacity-100 backdrop-blur-md shadow-xl focus:outline-none"
+                    title="Anterior">
+                <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+            </button>
+
+            <button @click="nextSlide()" 
+                    class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-slate-950/60 hover:bg-amber-400 hover:text-slate-950 text-white border border-white/20 flex items-center justify-center transition-all opacity-80 group-hover:opacity-100 backdrop-blur-md shadow-xl focus:outline-none"
+                    title="Siguiente">
+                <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+            </button>
+
+            <!-- Puntos indicadores inferiores -->
+            <div class="absolute bottom-2 inset-x-0 flex justify-center items-center gap-2 z-20 pointer-events-auto">
+                <template x-for="(slide, index) in slides" :key="index">
+                    <button @click="currentSlide = index" 
+                            :class="currentSlide === index ? 'w-8 bg-amber-400' : 'w-2.5 bg-white/40 hover:bg-white/80'"
+                            class="h-2 rounded-full transition-all duration-300 focus:outline-none"></button>
+                </template>
+            </div>
+
+        </div>
+
+        <!-- BARRA RÁPIDA DE BENEFICIOS BAJO EL BANNER HORIZONTAL -->
+        <div class="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4">
+            
+            <div class="flex items-center gap-3 p-3.5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
+                <div class="w-9 h-9 rounded-xl bg-amber-400/20 text-amber-400 flex items-center justify-center font-bold shrink-0">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
                 </div>
-
-                <!-- Titular Principal -->
-                <h1 class="font-heading font-black text-3xl sm:text-4xl md:text-5xl lg:text-5xl tracking-tight leading-tight text-white">
-                    Confección y Suministro de <br class="hidden sm:inline">
-                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-200">
-                        Uniformes Industriales
-                    </span> <br class="hidden sm:inline">
-                    y Ropa de Trabajo
-                </h1>
-
-                <!-- Subtítulo -->
-                <p class="text-base sm:text-lg text-slate-300 leading-relaxed max-w-2xl mx-auto lg:mx-0">
-                    Especialistas en polos de algodón peinado, chalecos de seguridad reflectivos, jeans 14 oz y mamelucos para minería, construcción y manufactura. Calidad certificada, durabilidad extrema y precios de fábrica.
-                </p>
-
-                <!-- Botones de Acción -->
-                <div class="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2">
-                    <button @click="$store.quoteCart.open()"
-                            class="px-7 py-3.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-heading font-extrabold text-sm sm:text-base shadow-xl shadow-amber-500/25 transition-all transform hover:-translate-y-0.5 flex items-center gap-2">
-                        <svg class="w-5 h-5 text-slate-950" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                        <span>Solicitar Cotización</span>
-                    </button>
-
-                    <a href="{{ route('products.index') }}"
-                       class="px-7 py-3.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white font-heading font-bold text-sm sm:text-base backdrop-blur-sm transition-all flex items-center gap-2">
-                        <span>Ver Catálogo Completo</span>
-                        <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-                    </a>
-                </div>
-
-                <!-- Contacto Express -->
-                <div class="pt-4 flex flex-wrap items-center justify-center lg:justify-start gap-6 text-xs text-slate-300 border-t border-white/10">
-                    <a href="https://wa.me/51920783202" target="_blank" class="flex items-center gap-2 hover:text-emerald-400 transition-colors">
-                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
-                        <span>WhatsApp de Ventas: <strong>920 783 202</strong></span>
-                    </a>
-                    <span class="text-slate-500">•</span>
-                    <span class="flex items-center gap-1.5">
-                        <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                        <span>Envíos diarios a todo el Perú</span>
-                    </span>
+                <div class="text-left">
+                    <span class="text-xs font-bold text-white block">Taller en Gamarra</span>
+                    <span class="text-[10px] text-slate-400">Precios de fabricante directo</span>
                 </div>
             </div>
 
-            <!-- Columna Banner Visual -->
-            <div class="lg:col-span-5 relative">
-                <div class="relative mx-auto max-w-md lg:max-w-none">
-                    
-                    <!-- Glow decorativo -->
-                    <div class="absolute inset-0 bg-gradient-to-tr from-amber-500/20 to-blue-500/20 rounded-3xl filter blur-2xl transform scale-95"></div>
+            <div class="flex items-center gap-3 p-3.5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
+                <div class="w-9 h-9 rounded-xl bg-amber-400/20 text-amber-400 flex items-center justify-center font-bold shrink-0">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                </div>
+                <div class="text-left">
+                    <span class="text-xs font-bold text-white block">Cintas 3M Homologadas</span>
+                    <span class="text-[10px] text-slate-400">Norma ANSI / NTP</span>
+                </div>
+            </div>
 
-                    <!-- Tarjeta Principal con Imagen de EUTEX -->
-                    <div class="relative rounded-3xl overflow-hidden border-2 border-white/20 shadow-2xl bg-slate-900 group">
-                        <img src="{{ asset('images/eutex/banner_principal.png') }}" 
-                             alt="EUTEX Uniformes Industriales" 
-                             class="w-full h-auto object-cover transform group-hover:scale-105 transition-transform duration-500">
-                        
-                        <!-- Overlay inferior de branding -->
-                        <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-slate-950 via-slate-950/80 to-transparent p-6 text-left">
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <span class="text-xs font-bold text-amber-400 uppercase tracking-wider block">Catálogo Oficial</span>
-                                    <h4 class="font-heading font-extrabold text-white text-lg">EUTEX Industrial Wear</h4>
-                                </div>
-                                <span class="px-3 py-1 rounded-full bg-amber-400/20 border border-amber-400/40 text-amber-300 text-xs font-bold">
-                                    Stock Permanente
-                                </span>
-                            </div>
-                        </div>
-                    </div>
+            <div class="flex items-center gap-3 p-3.5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
+                <div class="w-9 h-9 rounded-xl bg-amber-400/20 text-amber-400 flex items-center justify-center font-bold shrink-0">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/></svg>
+                </div>
+                <div class="text-left">
+                    <span class="text-xs font-bold text-white block">Bordado Computarizado</span>
+                    <span class="text-[10px] text-slate-400">Personalización de logotipos</span>
+                </div>
+            </div>
 
-                    <!-- Floating Pill Badges -->
-                    <div class="absolute -top-4 -left-4 bg-white/95 text-slate-900 rounded-2xl p-3 shadow-xl border border-slate-200 hidden sm:flex items-center gap-3 backdrop-blur-md">
-                        <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center font-bold">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        </div>
-                        <div class="text-left">
-                            <div class="text-xs font-bold leading-tight">100% Algodón Peinado</div>
-                            <div class="text-[10px] text-slate-500">Mayor frescura y durabilidad</div>
-                        </div>
-                    </div>
-
-                    <div class="absolute -bottom-4 -right-4 bg-white/95 text-slate-900 rounded-2xl p-3 shadow-xl border border-slate-200 hidden sm:flex items-center gap-3 backdrop-blur-md">
-                        <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-bold">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                        </div>
-                        <div class="text-left">
-                            <div class="text-xs font-bold leading-tight">Cintas Reflectivas 3M</div>
-                            <div class="text-[10px] text-slate-500">Alta visibilidad diurna y nocturna</div>
-                        </div>
-                    </div>
-
+            <div class="flex items-center gap-3 p-3.5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
+                <div class="w-9 h-9 rounded-xl bg-amber-400/20 text-amber-400 flex items-center justify-center font-bold shrink-0">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
+                </div>
+                <div class="text-left">
+                    <span class="text-xs font-bold text-white block">Envíos a Todo el Perú</span>
+                    <span class="text-[10px] text-slate-400">Lima y todas las provincias</span>
                 </div>
             </div>
 
         </div>
+
     </div>
 </section>
 
