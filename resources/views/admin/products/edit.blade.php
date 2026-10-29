@@ -180,7 +180,12 @@
                                     </button>
 
                                     <button type="button" 
-                                            @click="removeGalleryItem(idx)" 
+                                            @click="showDeleteModal({
+                                                title: '¿Quitar fotografía?',
+                                                message: 'Esta foto se removerá de la galería de la prenda.',
+                                                confirmText: 'Sí, Quitar',
+                                                onConfirm: () => removeGalleryItem(idx)
+                                            })" 
                                             class="inline-flex items-center gap-1 p-1 px-1.5 rounded-lg text-rose-500 hover:text-white hover:bg-rose-600 transition-colors text-[10px] font-bold" 
                                             title="Eliminar esta foto de la galería">
                                         <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -361,6 +361,154 @@
         </button>
     </nav>
 
+    <!-- ========================================================================= -->
+    <!-- MODAL DE CONFIRMACIÓN ELEGANTE (REEMPLAZA EL CONFIRM NATIVO DEL NAVEGADOR) -->
+    <!-- ========================================================================= -->
+    <div x-data="{
+            isOpen: false,
+            modalTitle: '¿Eliminar este elemento?',
+            modalMessage: 'Esta acción no se puede deshacer. Se removerá permanentemente.',
+            modalConfirmText: 'Sí, Eliminar',
+            modalCancelText: 'Cancelar',
+            actionCallback: null,
+            targetFormId: null,
+            openModal(data) {
+                this.modalTitle = data.title || '¿Eliminar este elemento?';
+                this.modalMessage = data.message || 'Esta acción no se puede deshacer. Se removerá permanentemente.';
+                this.modalConfirmText = data.confirmText || 'Sí, Eliminar';
+                this.modalCancelText = data.cancelText || 'Cancelar';
+                this.actionCallback = (typeof data.onConfirm === 'function') ? data.onConfirm : null;
+                this.targetFormId = data.formId || null;
+                this.isOpen = true;
+                document.body.style.overflow = 'hidden';
+            },
+            closeModal() {
+                this.isOpen = false;
+                this.actionCallback = null;
+                this.targetFormId = null;
+                document.body.style.overflow = '';
+            },
+            confirmAction() {
+                const cb = this.actionCallback;
+                const formId = this.targetFormId;
+                this.closeModal();
+                if (typeof cb === 'function') {
+                    cb();
+                } else if (formId) {
+                    const form = document.getElementById(formId);
+                    if (form) form.submit();
+                }
+            }
+        }"
+        x-init="
+            window.showDeleteModal = (data) => openModal(data);
+            window.addEventListener('open-delete-modal', (e) => openModal(e.detail));
+        "
+        @keydown.escape.window="closeModal()"
+        x-show="isOpen"
+        class="fixed inset-0 z-50 overflow-y-auto"
+        role="dialog"
+        aria-modal="true"
+        style="display: none;">
+        
+        <!-- Backdrop difuminado oscuro -->
+        <div x-show="isOpen"
+             x-transition:enter="transition-opacity ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition-opacity ease-in duration-200"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             @click="closeModal()"
+             class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm transition-opacity"></div>
+
+        <!-- Contenedor centrado -->
+        <div class="min-h-full flex items-center justify-center p-4 sm:p-6 text-center">
+            <div x-show="isOpen"
+                 x-transition:enter="transition ease-out duration-300 transform"
+                 x-transition:enter-start="opacity-0 translate-y-4 scale-95"
+                 x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                 x-transition:leave="transition ease-in duration-200 transform"
+                 x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+                 x-transition:leave-end="opacity-0 translate-y-4 scale-95"
+                 @click.outside="closeModal()"
+                 class="relative w-full max-w-sm sm:max-w-md transform overflow-hidden rounded-3xl bg-white p-6 sm:p-8 text-center shadow-2xl border border-slate-200/90 transition-all">
+                
+                <!-- Botón de Cerrar (X) Superior -->
+                <button type="button" 
+                        @click="closeModal()" 
+                        class="absolute top-4 right-4 p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+
+                <!-- Icono de Advertencia con Gradiente y Glow -->
+                <div class="relative mx-auto w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-tr from-rose-500 to-red-600 text-white flex items-center justify-center shadow-xl shadow-rose-500/30 mb-4">
+                    <svg class="w-8 h-8 sm:w-10 sm:h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                    <!-- Halo decorativo animado -->
+                    <span class="absolute -inset-1 rounded-2xl bg-rose-500/25 blur-sm -z-10 animate-pulse"></span>
+                </div>
+
+                <!-- Título del Modal -->
+                <h3 class="text-lg sm:text-xl font-heading font-black text-slate-900 tracking-tight" x-text="modalTitle"></h3>
+                
+                <!-- Mensaje Explicativo -->
+                <p class="text-xs sm:text-sm text-slate-500 mt-2 leading-relaxed px-2" x-text="modalMessage"></p>
+
+                <!-- Botones de Acción -->
+                <div class="mt-6 sm:mt-7 flex flex-col-reverse sm:flex-row items-center gap-3">
+                    <button type="button" 
+                            @click="closeModal()" 
+                            class="w-full sm:w-1/2 py-3 px-4 rounded-xl border border-slate-300 hover:border-slate-400 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs sm:text-sm transition-all shadow-xs active:scale-95 focus:outline-none"
+                            x-text="modalCancelText">
+                        Cancelar
+                    </button>
+                    
+                    <button type="button" 
+                            @click="confirmAction()" 
+                            class="w-full sm:w-1/2 py-3 px-4 rounded-xl bg-gradient-to-r from-rose-600 via-rose-500 to-red-600 hover:from-rose-500 hover:to-red-500 text-white font-bold text-xs sm:text-sm transition-all shadow-lg shadow-rose-600/30 hover:shadow-rose-600/40 active:scale-95 flex items-center justify-center gap-2 focus:outline-none">
+                        <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                        <span x-text="modalConfirmText">Sí, Eliminar</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script interceptor global para formularios con data-confirm -->
+    <script>
+        document.addEventListener('submit', function(e) {
+            const form = e.target;
+            if (form && form.hasAttribute && (form.hasAttribute('data-confirm') || form.classList.contains('confirm-delete'))) {
+                if (!form.dataset.confirmed) {
+                    e.preventDefault();
+                    const title = form.getAttribute('data-confirm-title') || '¿Confirmar eliminación?';
+                    const message = form.getAttribute('data-confirm') || 'Esta acción no se puede deshacer. Se removerá permanentemente.';
+                    const confirmText = form.getAttribute('data-confirm-btn') || 'Sí, Eliminar';
+                    
+                    if (window.showDeleteModal) {
+                        window.showDeleteModal({
+                            title: title,
+                            message: message,
+                            confirmText: confirmText,
+                            onConfirm: () => {
+                                form.dataset.confirmed = 'true';
+                                form.submit();
+                            }
+                        });
+                    } else if (confirm(message)) {
+                        form.submit();
+                    }
+                }
+            }
+        });
+    </script>
+
     @stack('scripts')
 </body>
 </html>

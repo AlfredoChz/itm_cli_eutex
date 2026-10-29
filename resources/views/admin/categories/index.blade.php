@@ -58,7 +58,7 @@
                             <a href="{{ route('admin.categories.edit', $category) }}" class="p-2 rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100" title="Editar">
                                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                             </a>
-                            <form method="POST" action="{{ route('admin.categories.destroy', $category) }}" onsubmit="return confirm('¿Eliminar esta categoría?');">
+                            <form method="POST" action="{{ route('admin.categories.destroy', $category) }}" data-confirm="La categoría '{{ $category->name }}' se eliminará del catálogo." data-confirm-title="¿Eliminar Categoría?">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="p-2 rounded-xl bg-rose-50 text-rose-600 hover:bg-rose-100" title="Eliminar">
@@ -144,7 +144,7 @@
                                         </svg>
                                     </a>
 
-                                    <form method="POST" action="{{ route('admin.categories.destroy', $category) }}" onsubmit="return confirm('¿Seguro que deseas eliminar esta categoría?');">
+                                    <form method="POST" action="{{ route('admin.categories.destroy', $category) }}" data-confirm="La categoría '{{ $category->name }}' se eliminará del catálogo." data-confirm-title="¿Eliminar Categoría?">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" 

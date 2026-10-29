@@ -262,7 +262,11 @@
                                 </label>
 
                                 <button type="button" 
-                                        onclick="if(confirm('¿Seguro que deseas eliminar el Banner #{{ $index + 1 }}?')) { document.getElementById('delete_banner_form_{{ $index }}').submit(); }"
+                                        onclick="showDeleteModal({
+                                            title: '¿Eliminar Banner #{{ $index + 1 }}?',
+                                            message: 'El slide se retirará de la portada web inmediatamente y no se podrá recuperar.',
+                                            formId: 'delete_banner_form_{{ $index }}'
+                                        })"
                                         class="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-rose-600 hover:text-white bg-rose-50 hover:bg-rose-600 border border-rose-200 transition-all font-bold text-xs cursor-pointer shadow-xs active:scale-95"
                                         title="Eliminar este banner">
                                     <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -155,7 +155,7 @@
             <!-- ZONA DE ELIMINAR -->
             <div class="pt-4 border-t border-slate-100 flex items-center justify-between text-xs">
                 <span class="text-slate-400">ID de registro: #{{ $quote->id }}</span>
-                <form method="POST" action="{{ route('admin.quotes.destroy', $quote) }}" onsubmit="return confirm('¿Seguro que deseas eliminar esta cotización?');">
+                <form method="POST" action="{{ route('admin.quotes.destroy', $quote) }}" data-confirm="La cotización #{{ $quote->id }} se eliminará del registro." data-confirm-title="¿Eliminar Cotización?">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="text-rose-600 hover:text-rose-800 font-bold p-1">

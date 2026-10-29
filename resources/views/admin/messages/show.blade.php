@@ -72,7 +72,7 @@
         <div class="p-6 bg-slate-50/50 border-t border-slate-100 flex items-center justify-between text-xs">
             <span class="text-slate-400">Estado: Leído</span>
 
-            <form method="POST" action="{{ route('admin.messages.destroy', $message) }}" onsubmit="return confirm('¿Seguro que deseas eliminar este mensaje?');">
+            <form method="POST" action="{{ route('admin.messages.destroy', $message) }}" data-confirm="El mensaje de {{ $message->name }} se eliminará del registro." data-confirm-title="¿Eliminar Mensaje?">
                 @csrf
                 @method('DELETE')
                 <button type="submit" class="text-rose-600 hover:text-rose-800 font-bold">

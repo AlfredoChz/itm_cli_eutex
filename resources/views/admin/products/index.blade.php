@@ -161,7 +161,7 @@
                                 <span>Editar</span>
                             </a>
 
-                            <form method="POST" action="{{ route('admin.products.destroy', $product) }}" onsubmit="return confirm('¿Seguro que deseas eliminar este producto?');" class="shrink-0">
+                            <form method="POST" action="{{ route('admin.products.destroy', $product) }}" data-confirm="El producto '{{ $product->name }}' se removerá permanentemente del catálogo." data-confirm-title="¿Eliminar Producto?" class="shrink-0">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="p-2 rounded-xl bg-rose-50 text-rose-600 hover:bg-rose-100 transition-colors" title="Eliminar">
@@ -275,7 +275,7 @@
                                         </a>
 
                                         <!-- Eliminar -->
-                                        <form method="POST" action="{{ route('admin.products.destroy', $product) }}" onsubmit="return confirm('¿Seguro que deseas eliminar este producto?');">
+                                        <form method="POST" action="{{ route('admin.products.destroy', $product) }}" data-confirm="El producto '{{ $product->name }}' se removerá permanentemente del catálogo." data-confirm-title="¿Eliminar Producto?">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" 
