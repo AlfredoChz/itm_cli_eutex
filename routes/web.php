@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\QuoteController as AdminQuoteController;
 use App\Http\Controllers\Admin\MessageController as AdminMessageController;
+use App\Http\Controllers\Admin\PageSettingController as AdminPageSettingController;
 
 // -------------------------------------------------------------
 // PUBLIC WEBSITE ROUTES (EUTEX CATÁLOGO & CORPORATIVO)
@@ -62,11 +63,15 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
     
     // Products Management
-    Route::resource('productos', AdminProductController::class)->names('products');
+    Route::resource('productos', AdminProductController::class)
+        ->parameters(['productos' => 'product'])
+        ->names('products');
     Route::post('productos/{product}/destacar', [AdminProductController::class, 'toggleFeatured'])->name('products.toggle-featured');
 
     // Categories Management
-    Route::resource('categorias', AdminCategoryController::class)->names('categories');
+    Route::resource('categorias', AdminCategoryController::class)
+        ->parameters(['categorias' => 'category'])
+        ->names('categories');
 
     // Quotes Management
     Route::get('cotizaciones', [AdminQuoteController::class, 'index'])->name('quotes.index');
@@ -78,4 +83,8 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::get('mensajes', [AdminMessageController::class, 'index'])->name('messages.index');
     Route::get('mensajes/{message}', [AdminMessageController::class, 'show'])->name('messages.show');
     Route::delete('mensajes/{message}', [AdminMessageController::class, 'destroy'])->name('messages.destroy');
+
+    // Site Content & Pages Management
+    Route::get('paginas', [AdminPageSettingController::class, 'index'])->name('pages.index');
+    Route::post('paginas/{section}', [AdminPageSettingController::class, 'update'])->name('pages.update');
 });

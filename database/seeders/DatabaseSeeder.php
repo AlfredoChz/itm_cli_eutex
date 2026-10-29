@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\BlogPost;
 use App\Models\User;
+use App\Models\SiteSetting;
 use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
@@ -79,7 +80,7 @@ class DatabaseSeeder extends Seeder
 
         $categoryModels = [];
         foreach ($categories as $catData) {
-            $categoryModels[$catData['slug']] = Category::create($catData);
+            $categoryModels[$catData['slug']] = Category::firstOrCreate(['slug' => $catData['slug']], $catData);
         }
 
         // 2. Products
@@ -364,7 +365,7 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($products as $prod) {
-            Product::create($prod);
+            Product::firstOrCreate(['slug' => $prod['slug']], $prod);
         }
 
         // 3. Blog Posts
@@ -405,7 +406,74 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($posts as $p) {
-            BlogPost::create($p);
+            BlogPost::firstOrCreate(['slug' => $p['slug']], $p);
         }
+
+        // 4. Default Site Settings
+        SiteSetting::set('contact_phone', '920 783 202', 'contacto');
+        SiteSetting::set('contact_whatsapp', '920783202', 'contacto');
+        SiteSetting::set('contact_whatsapp_text', 'Hola EUTEX, deseo información y cotización de uniformes industriales.', 'contacto');
+        SiteSetting::set('contact_email', 'eutex@ventas.com', 'contacto');
+        SiteSetting::set('contact_address', 'Gamarra, La Victoria, Lima - Perú', 'contacto');
+        SiteSetting::set('contact_schedule', 'Lunes a Sábado: 8:00 AM - 7:00 PM', 'contacto');
+        SiteSetting::set('contact_maps_url', 'https://maps.google.com/?q=Gamarra+La+Victoria+Lima', 'contacto');
+
+        SiteSetting::set('home_banners', [
+            [
+                'image' => '/images/eutex/banner_principal.png',
+                'title' => 'Fabricantes Directos de Uniformes Industriales',
+                'subtitle' => 'Precios por mayor, confección pesada en Gamarra y envíos a todo el Perú.',
+                'link' => 'https://wa.me/51920783202?text=Hola%20EUTEX,%20deseo%20cotizar%20uniformes%20industriales%20al%20por%20mayor',
+                'link_text' => 'Cotizar al WhatsApp',
+                'badge' => 'Gamarra • Lima - Perú',
+                'is_active' => true,
+            ],
+            [
+                'image' => '/images/eutex/polos_manga_larga.png',
+                'title' => 'Polos Manga Larga Industriales en 10 Colores',
+                'subtitle' => '100% Algodón peinado de primera calidad, cuello reforzado y puños en rib.',
+                'link' => '/productos/polo-manga-larga-industrial-cuello-redondo',
+                'link_text' => 'Ver Producto',
+                'badge' => 'Más Vendido • 10 Colores',
+                'is_active' => true,
+            ],
+            [
+                'image' => '/images/eutex/chalecos_seguridad.png',
+                'title' => 'Chalecos de Seguridad y Geólogo de Alta Visibilidad',
+                'subtitle' => 'Cintas reflectivas certificadas 3M de 5 cm, multibolsillos y cierre tractor.',
+                'link' => '/productos/chaleco-seguridad-tipo-geologo-multibolsillos',
+                'link_text' => 'Ver Chaleco',
+                'badge' => 'Norma ANSI 107',
+                'is_active' => true,
+            ],
+            [
+                'image' => '/images/eutex/jeans_industriales.png',
+                'title' => 'Jeans Industriales 14 oz con Triple Costura',
+                'subtitle' => 'Denim resistente con cinta reflectiva en piernas para minería y construcción.',
+                'link' => '/productos/pantalon-jean-industrial-14oz-cinta-reflectiva',
+                'link_text' => 'Ver Jean 14 oz',
+                'badge' => 'Denim Pesado 14 oz',
+                'is_active' => true,
+            ],
+            [
+                'image' => '/images/eutex/tarjeta_contacto.png',
+                'title' => 'Atención Corporativa y Cotizaciones Inmediatas',
+                'subtitle' => 'Envíos a todo el Perú, muestras físicas y facturación electrónica.',
+                'link' => 'https://wa.me/51920783202?text=Hola%20EUTEX,%20deseo%20informacion',
+                'link_text' => 'Contactar Asesor',
+                'badge' => 'Atención Inmediata',
+                'is_active' => true,
+            ]
+        ], 'home');
+
+        SiteSetting::set('nosotros_title', 'EUTEX: Pasión y Calidad en Confección Textil Industrial', 'nosotros');
+        SiteSetting::set('nosotros_story', "Con más de una década en el emporio comercial de Gamarra, EUTEX se ha consolidado como fabricante líder de uniformes industriales, ropa de trabajo pesado y dotaciones para minería, hidrocarburos, construcción y logística.\n\nNuestros talleres propios en Gamarra, La Victoria cuentan con maquinaria de última generación para patronaje, corte de precisión, confección con costura de cadeneta reforzada y bordado computarizado.", 'nosotros');
+        SiteSetting::set('nosotros_mission', 'Proteger y uniformar al trabajador peruano con prendas duraderas, seguras y de máxima comodidad, brindando precios directos de fábrica sin intermediarios.', 'nosotros');
+        SiteSetting::set('nosotros_vision', 'Ser la empresa referente nacional e internacional en fabricación y distribución de uniformes técnicos industriales y corporativos.', 'nosotros');
+        SiteSetting::set('nosotros_experience_years', '10+', 'nosotros');
+        SiteSetting::set('nosotros_completed_orders', '50,000+', 'nosotros');
+        SiteSetting::set('nosotros_corporate_clients', '250+', 'nosotros');
+        SiteSetting::set('nosotros_satisfaction_rate', '99.8%', 'nosotros');
+        SiteSetting::set('nosotros_image', '/images/eutex/tarjeta_contacto.png', 'nosotros');
     }
 }

@@ -30,18 +30,15 @@
                     Trayectoria y Compromiso
                 </span>
                 <h2 class="font-heading font-black text-2xl sm:text-3xl text-slate-900 leading-tight">
-                    Pasión por la confección de alta resistencia
+                    {{ setting('nosotros_title', 'Pasión por la confección de alta resistencia') }}
                 </h2>
-                <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
-                    <strong>EUTEX</strong> nació con un propósito claro: dotar a la fuerza trabajadora del Perú con indumentaria industrial de máxima calidad, capaz de resistir las condiciones más extremas de minería, construcción y manufactura, sin sacrificar confort ni diseño.
-                </p>
-                <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
-                    Nuestros talleres propios en <strong>Gamarra, La Victoria</strong> cuentan con maquinaria de última generación para patronaje, corte de precisión, confección con costura de cadeneta reforzada y bordado computarizado. Esta integración vertical nos permite ofrecer precios competitivos de fabricante directo y plazos de entrega estrictos.
-                </p>
+                <div class="text-slate-600 text-sm sm:text-base leading-relaxed space-y-4">
+                    {!! nl2br(e(setting('nosotros_story', "EUTEX nació con un propósito claro: dotar a la fuerza trabajadora del Perú con indumentaria industrial de máxima calidad, capaz de resistir las condiciones más extremas de minería, construcción y manufactura, sin sacrificar confort ni diseño.\n\nNuestros talleres propios en Gamarra, La Victoria cuentan con maquinaria de última generación para patronaje, corte de precisión, confección con costura de cadeneta reforzada y bordado computarizado. Esta integración vertical nos permite ofrecer precios competitivos de fabricante directo y plazos de entrega estrictos."))) !!}
+                </div>
 
                 <div class="grid grid-cols-2 gap-4 pt-4">
                     <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200">
-                        <div class="font-heading font-black text-2xl text-eutex-navy">+10 Años</div>
+                        <div class="font-heading font-black text-2xl text-eutex-navy">{{ setting('nosotros_experience_years', '10+') }} Años</div>
                         <div class="text-xs text-slate-500 font-semibold mt-1">Liderazgo en confección textil industrial</div>
                     </div>
                     <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200">
@@ -54,7 +51,7 @@
             <!-- Banner Visual Card -->
             <div class="lg:col-span-6">
                 <div class="rounded-3xl overflow-hidden shadow-2xl border-2 border-slate-100 bg-slate-900">
-                    <img src="{{ asset('images/eutex/tarjeta_contacto.png') }}" 
+                    <img src="{{ asset(setting('nosotros_image', 'images/eutex/tarjeta_contacto.png')) }}" 
                          alt="EUTEX Uniformes Industriales" 
                          class="w-full h-auto object-cover">
                 </div>
@@ -76,7 +73,7 @@
                 </div>
                 <h3 class="font-heading font-black text-2xl text-slate-900">Nuestra Misión</h3>
                 <p class="text-sm text-slate-600 leading-relaxed">
-                    Confeccionar y suministrar uniformes industriales y prendas de alta visibilidad que brinden máxima protección física, durabilidad y bienestar a los trabajadores del Perú, impulsando la productividad de las empresas mediante indumentaria certificada y personalizada.
+                    {{ setting('nosotros_mission', 'Confeccionar y suministrar uniformes industriales y prendas de alta visibilidad que brinden máxima protección física, durabilidad y bienestar a los trabajadores del Perú, impulsando la productividad de las empresas mediante indumentaria certificada y personalizada.') }}
                 </p>
             </div>
 
@@ -86,7 +83,7 @@
                 </div>
                 <h3 class="font-heading font-black text-2xl text-slate-900">Nuestra Visión</h3>
                 <p class="text-sm text-slate-600 leading-relaxed">
-                    Ser reconocidos a nivel nacional como la empresa textil líder y de referencia indiscutible en uniformes industriales, ropa técnica y dotación de seguridad en el Perú, destacando por nuestra capacidad de innovación en telas y excelencia en el servicio al cliente.
+                    {{ setting('nosotros_vision', 'Ser reconocidos a nivel nacional como la empresa textil líder y de referencia indiscutible en uniformes industriales, ropa técnica y dotación de seguridad en el Perú, destacando por nuestra capacidad de innovación en telas y excelencia en el servicio al cliente.') }}
                 </p>
             </div>
 

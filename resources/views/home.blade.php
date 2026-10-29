@@ -5,37 +5,57 @@
 
 @section('content')
 
+@php
+    $dbBanners = setting('home_banners');
+    $slides = [];
+    if (!empty($dbBanners) && is_array($dbBanners)) {
+        foreach ($dbBanners as $b) {
+            if (!empty($b['is_active'])) {
+                $slides[] = [
+                    'image' => asset($b['image'] ?? 'images/eutex/banner_principal.png'),
+                    'alt' => $b['title'] ?? 'EUTEX Uniformes Industriales',
+                    'url' => !empty($b['link']) ? $b['link'] : ('https://wa.me/' . setting('contact_whatsapp', '51920783202')),
+                ];
+            }
+        }
+    }
+    
+    if (empty($slides)) {
+        $slides = [
+            [
+                'image' => asset('images/eutex/banner_principal.png'),
+                'alt' => 'EUTEX Uniformes Industriales - Catálogo Oficial',
+                'url' => 'https://wa.me/' . setting('contact_whatsapp', '51920783202') . '?text=' . urlencode(setting('contact_whatsapp_text', 'Hola EUTEX, deseo cotizar uniformes industriales.')),
+            ],
+            [
+                'image' => asset('images/eutex/polos_manga_larga.png'),
+                'alt' => 'Polos Manga Larga Cuello Redondo - 10 Colores',
+                'url' => route('products.show', 'polo-manga-larga-industrial-cuello-redondo'),
+            ],
+            [
+                'image' => asset('images/eutex/chalecos_seguridad.png'),
+                'alt' => 'Chalecos de Seguridad y Tipo Geólogo Multibolsillos',
+                'url' => route('products.show', 'chaleco-seguridad-tipo-geologo-multibolsillos'),
+            ],
+            [
+                'image' => asset('images/eutex/jeans_industriales.png'),
+                'alt' => 'Jeans Industriales 14 oz con Cinta Reflectiva',
+                'url' => route('products.show', 'pantalon-jean-industrial-14oz-cinta-reflectiva'),
+            ],
+            [
+                'image' => asset('images/eutex/tarjeta_contacto.png'),
+                'alt' => 'Atención al Cliente EUTEX Gamarra',
+                'url' => 'https://wa.me/' . setting('contact_whatsapp', '51920783202') . '?text=' . urlencode(setting('contact_whatsapp_text', 'Hola EUTEX, deseo información y cotización.')),
+            ]
+        ];
+    }
+@endphp
+
 <!-- BANNER HORIZONTAL FULL-WIDTH (DEBAJO DEL MENÚ - OCUPA TODO EL ANCHO) -->
 <section class="w-full relative overflow-hidden bg-slate-950 border-b border-white/10"
          x-data="{
             currentSlide: 0,
-            slides: [
-                {
-                    image: '{{ asset('images/eutex/banner_principal.png') }}',
-                    alt: 'EUTEX Uniformes Industriales - Catálogo Oficial',
-                    url: 'https://wa.me/51920783202?text={{ urlencode('Hola EUTEX, deseo cotizar uniformes industriales del banner principal.') }}'
-                },
-                {
-                    image: '{{ asset('images/eutex/polos_manga_larga.png') }}',
-                    alt: 'Polos Manga Larga Cuello Redondo - 10 Colores',
-                    url: '{{ route('products.show', 'polo-manga-larga-industrial-cuello-redondo') }}'
-                },
-                {
-                    image: '{{ asset('images/eutex/chalecos_seguridad.png') }}',
-                    alt: 'Chalecos de Seguridad y Tipo Geólogo Multibolsillos',
-                    url: '{{ route('products.show', 'chaleco-seguridad-tipo-geologo-multibolsillos') }}'
-                },
-                {
-                    image: '{{ asset('images/eutex/jeans_industriales.png') }}',
-                    alt: 'Jeans Industriales 14 oz con Cinta Reflectiva',
-                    url: '{{ route('products.show', 'pantalon-jean-industrial-14oz-cinta-reflectiva') }}'
-                },
-                {
-                    image: '{{ asset('images/eutex/tarjeta_contacto.png') }}',
-                    alt: 'Atención al Cliente EUTEX Gamarra',
-                    url: 'https://wa.me/51920783202?text={{ urlencode('Hola EUTEX, deseo información y cotización.') }}'
-                }
-            ],
+            slides: {{ json_encode($slides) }},
             autoplayInterval: null,
             startAutoplay() {
                 this.autoplayInterval = setInterval(() => {

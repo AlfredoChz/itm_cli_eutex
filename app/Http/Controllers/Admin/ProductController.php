@@ -62,7 +62,7 @@ class ProductController extends Controller
             'features' => ['nullable', 'string'],
         ]);
 
-        $slug = $validated['slug'] ? Str::slug($validated['slug']) : Str::slug($validated['name']);
+        $slug = !empty($validated['slug']) ? Str::slug($validated['slug']) : Str::slug($validated['name']);
         
         // Ensure slug uniqueness
         $originalSlug = $slug;
@@ -93,9 +93,9 @@ class ProductController extends Controller
             'name' => $validated['name'],
             'slug' => $slug,
             'sku' => $validated['sku'] ?? 'EUT-' . strtoupper(Str::random(5)),
-            'short_description' => $validated['short_description'],
-            'description' => $validated['description'],
-            'badge' => $validated['badge'],
+            'short_description' => $validated['short_description'] ?? null,
+            'description' => $validated['description'] ?? null,
+            'badge' => $validated['badge'] ?? null,
             'is_featured' => $request->boolean('is_featured'),
             'image' => $imagePath,
             'gallery' => $imagePath ? [$imagePath] : null,
@@ -132,7 +132,7 @@ class ProductController extends Controller
             'features' => ['nullable', 'string'],
         ]);
 
-        $slug = $validated['slug'] ? Str::slug($validated['slug']) : Str::slug($validated['name']);
+        $slug = !empty($validated['slug']) ? Str::slug($validated['slug']) : Str::slug($validated['name']);
         
         $imagePath = $product->image;
         if ($request->hasFile('image_file')) {
@@ -157,9 +157,9 @@ class ProductController extends Controller
             'name' => $validated['name'],
             'slug' => $slug,
             'sku' => $validated['sku'] ?? $product->sku,
-            'short_description' => $validated['short_description'],
-            'description' => $validated['description'],
-            'badge' => $validated['badge'],
+            'short_description' => $validated['short_description'] ?? null,
+            'description' => $validated['description'] ?? null,
+            'badge' => $validated['badge'] ?? null,
             'is_featured' => $request->boolean('is_featured'),
             'image' => $imagePath,
             'colors' => $colors,

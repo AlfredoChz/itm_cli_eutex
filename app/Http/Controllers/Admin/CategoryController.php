@@ -33,7 +33,7 @@ class CategoryController extends Controller
             'image_url' => ['nullable', 'string'],
         ]);
 
-        $slug = $validated['slug'] ? Str::slug($validated['slug']) : Str::slug($validated['name']);
+        $slug = !empty($validated['slug']) ? Str::slug($validated['slug']) : Str::slug($validated['name']);
         
         $imagePath = $validated['image_url'] ?? null;
         if ($request->hasFile('image_file')) {
@@ -50,7 +50,7 @@ class CategoryController extends Controller
         Category::create([
             'name' => $validated['name'],
             'slug' => $slug,
-            'description' => $validated['description'],
+            'description' => $validated['description'] ?? null,
             'icon' => $validated['icon'] ?? 'folder',
             'order' => $validated['order'] ?? 0,
             'image' => $imagePath,
@@ -77,7 +77,7 @@ class CategoryController extends Controller
             'image_url' => ['nullable', 'string'],
         ]);
 
-        $slug = $validated['slug'] ? Str::slug($validated['slug']) : Str::slug($validated['name']);
+        $slug = !empty($validated['slug']) ? Str::slug($validated['slug']) : Str::slug($validated['name']);
 
         $imagePath = $category->image;
         if ($request->hasFile('image_file')) {
@@ -96,7 +96,7 @@ class CategoryController extends Controller
         $category->update([
             'name' => $validated['name'],
             'slug' => $slug,
-            'description' => $validated['description'],
+            'description' => $validated['description'] ?? null,
             'icon' => $validated['icon'] ?? $category->icon,
             'order' => $validated['order'] ?? $category->order,
             'image' => $imagePath,

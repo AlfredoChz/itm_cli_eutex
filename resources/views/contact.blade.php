@@ -60,8 +60,8 @@
                             </div>
                             <div>
                                 <span class="text-[10px] uppercase font-bold text-slate-400 block">Teléfono / WhatsApp</span>
-                                <a href="tel:920783202" class="font-heading font-black text-lg text-white hover:text-amber-400 transition-colors">
-                                    920 783 202
+                                <a href="tel:{{ preg_replace('/[^0-9]/', '', setting('contact_phone', '920783202')) }}" class="font-heading font-black text-lg text-white hover:text-amber-400 transition-colors">
+                                    {{ setting('contact_phone', '920 783 202') }}
                                 </a>
                             </div>
                         </div>
@@ -73,8 +73,8 @@
                             </div>
                             <div>
                                 <span class="text-[10px] uppercase font-bold text-slate-400 block">Correo de Ventas</span>
-                                <a href="mailto:eutex@ventas.com" class="font-medium text-white hover:text-amber-400 transition-colors">
-                                    eutex@ventas.com
+                                <a href="mailto:{{ setting('contact_email', 'eutex@ventas.com') }}" class="font-medium text-white hover:text-amber-400 transition-colors">
+                                    {{ setting('contact_email', 'eutex@ventas.com') }}
                                 </a>
                             </div>
                         </div>
@@ -99,15 +99,15 @@
                             </div>
                             <div>
                                 <span class="text-[10px] uppercase font-bold text-slate-400 block">Ubicación y Talleres</span>
-                                <span class="font-semibold text-white">Gamarra_Lima (La Victoria, Lima)</span>
+                                <span class="font-semibold text-white">{{ setting('contact_address', 'Gamarra, La Victoria, Lima - Perú') }}</span>
                             </div>
                         </div>
 
                     </div>
 
                     <div class="mt-8 pt-4 border-t border-white/10 flex items-center justify-between">
-                        <span class="text-xs text-slate-400">Lun - Sáb: 8:00 AM - 7:00 PM</span>
-                        <a href="https://wa.me/51920783202" target="_blank" class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white text-xs font-bold transition-colors">
+                        <span class="text-xs text-slate-400">{{ setting('contact_schedule', 'Lun - Sáb: 8:00 AM - 7:00 PM') }}</span>
+                        <a href="https://wa.me/{{ setting('contact_whatsapp', '51920783202') }}?text={{ urlencode(setting('contact_whatsapp_text', 'Hola EUTEX, deseo información y cotización.')) }}" target="_blank" class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white text-xs font-bold transition-colors">
                             WhatsApp Directo
                         </a>
                     </div>

@@ -87,4 +87,86 @@ class AdminTest extends TestCase
         $msgRes = $this->get('/admin/mensajes');
         $msgRes->assertStatus(200);
     }
+
+    public function test_admin_can_edit_and_update_category(): void
+    {
+        $user = User::where('email', 'admin@eutex.com')->first();
+        $this->actingAs($user);
+
+        $cat = Category::first();
+        $this->assertNotNull($cat);
+
+        // Test GET edit page (where UrlGenerationException occurred before)
+        $editRes = $this->get(route('admin.categories.edit', $cat));
+        $editRes->assertStatus(200);
+        $editRes->assertSee('Editar Categoría');
+        $editRes->assertSee($cat->name);
+
+        // Test PUT update
+        $updateRes = $this->put(route('admin.categories.update', $cat), [
+            'name' => 'Polos Industriales Premium',
+            'order' => 2,
+        ]);
+
+        $updateRes->assertRedirect(route('admin.categories.index'));
+        $this->assertDatabaseHas('categories', [
+            'id' => $cat->id,
+            'name' => 'Polos Industriales Premium',
+        ]);
+    }
+
+    public function test_admin_can_edit_and_update_product(): void
+    {
+        $user = User::where('email', 'admin@eutex.com')->first();
+        $this->actingAs($user);
+
+        $prod = Product::first();
+        $this->assertNotNull($prod);
+
+        // Test GET edit page
+        $editRes = $this->get(route('admin.products.edit', $prod));
+        $editRes->assertStatus(200);
+        $editRes->assertSee('Editar Prenda');
+        $editRes->assertSee($prod->name);
+
+        // Test PUT update
+        $updateRes = $this->put(route('admin.products.update', $prod), [
+            'category_id' => $prod->category_id,
+            'name' => 'Polo Manga Larga Pesado',
+            'short_description' => 'Descripción actualizada',
+        ]);
+
+        $updateRes->assertRedirect(route('admin.products.index'));
+        $this->assertDatabaseHas('products', [
+            'id' => $prod->id,
+            'name' => 'Polo Manga Larga Pesado',
+        ]);
+    }
+
+    public function test_admin_can_view_and_update_page_settings(): void
+    {
+        $user = User::where('email', 'admin@eutex.com')->first();
+        $this->actingAs($user);
+
+        // Test GET /admin/paginas
+        $res = $this->get(route('admin.pages.index'));
+        $res->assertStatus(200);
+        $res->assertSee('Páginas & Contenido Web');
+        $res->assertSee('Banners de Inicio');
+
+        // Test POST /admin/paginas/contacto
+        $postRes = $this->post(route('admin.pages.update', 'contacto'), [
+            'phone' => '999 888 777',
+            'whatsapp' => '999888777',
+            'whatsapp_text' => 'Nuevo mensaje de prueba WhatsApp',
+            'email' => 'ventas_nuevas@eutex.com',
+            'address' => 'Av. Gamarra 1234, Lima',
+            'schedule' => 'Lunes a Viernes: 9am a 6pm',
+        ]);
+
+        $postRes->assertRedirect(route('admin.pages.index', ['tab' => 'contacto']));
+        $this->assertEquals('999 888 777', setting('contact_phone'));
+        $this->assertEquals('999888777', setting('contact_whatsapp'));
+        $this->assertEquals('ventas_nuevas@eutex.com', setting('contact_email'));
+    }
 }
