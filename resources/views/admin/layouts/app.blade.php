@@ -12,10 +12,14 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('styles')
 </head>
-<body class="h-full antialiased font-sans bg-slate-100 text-slate-800 select-none sm:select-auto" 
+<body class="min-h-screen antialiased font-sans bg-slate-100 text-slate-800 flex flex-col" 
       x-data="{ 
           sidebarOpen: false,
-          quickActionOpen: false
+          sidebarCollapsed: localStorage.getItem('eutex_admin_collapsed') === 'true',
+          toggleCollapse() {
+              this.sidebarCollapsed = !this.sidebarCollapsed;
+              localStorage.setItem('eutex_admin_collapsed', this.sidebarCollapsed);
+          }
       }">
 
     @php
@@ -24,8 +28,11 @@
         $totalProductsCount = \App\Models\Product::count();
     @endphp
 
-    <div class="min-h-full flex">
-        <!-- SIDEBAR PARA MÓVIL (DRAWER DESLIZABLE) -->
+    <div class="min-h-screen flex flex-1">
+
+        <!-- ========================================================================= -->
+        <!-- 1. SIDEBAR PARA MÓVIL (DRAWER DESLIZABLE CON PERFIL Y CIERRE AL FONDO) -->
+        <!-- ========================================================================= -->
         <div x-show="sidebarOpen" 
              x-transition:enter="transition-opacity ease-out duration-300"
              x-transition:enter-start="opacity-0"
@@ -50,51 +57,53 @@
                      x-transition:leave-end="-translate-x-full"
                      class="relative mr-16 flex w-full max-w-xs flex-1">
                     
-                    <div class="flex flex-col flex-1 bg-slate-950 border-r border-slate-800 pt-5 pb-4">
+                    <div class="flex flex-col flex-1 h-full bg-slate-950 border-r border-slate-800">
                         <!-- Header Drawer -->
-                        <div class="flex items-center justify-between px-6 pb-4 border-b border-slate-800">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-xl bg-orange-600 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-orange-500/30">E</div>
+                        <div class="flex items-center justify-between px-5 h-16 border-b border-slate-800 shrink-0">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-9 h-9 rounded-xl bg-orange-600 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-orange-500/30">E</div>
                                 <div>
-                                    <span class="text-xl font-black tracking-wider text-white">EUTEX</span>
-                                    <span class="block text-[10px] uppercase font-bold tracking-widest text-orange-400">Control Móvil</span>
+                                    <span class="text-lg font-black tracking-wider text-white">EUTEX</span>
+                                    <span class="block text-[9px] uppercase font-bold tracking-widest text-orange-400">Control Móvil</span>
                                 </div>
                             </div>
-                            <button type="button" @click="sidebarOpen = false" class="text-slate-400 hover:text-white p-2 rounded-lg hover:bg-slate-800">
-                                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <button type="button" @click="sidebarOpen = false" class="text-slate-400 hover:text-white p-2 rounded-xl hover:bg-slate-800">
+                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                 </svg>
                             </button>
                         </div>
                         
-                        <!-- Perfil en Drawer -->
-                        <div class="px-6 py-4 bg-slate-900/60 border-b border-slate-800/80 flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-orange-600/20 text-orange-400 font-bold border border-orange-500/30 flex items-center justify-center text-base">
-                                {{ strtoupper(substr(auth()->user()->name ?? 'A', 0, 1)) }}
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <p class="text-xs font-bold text-white truncate">{{ auth()->user()->name ?? 'Administrador' }}</p>
-                                <p class="text-[11px] text-slate-400 truncate">{{ auth()->user()->email ?? 'admin@eutex.com' }}</p>
-                            </div>
-                        </div>
-
-                        <!-- Nav Mobile -->
-                        <nav class="mt-4 flex-1 px-4 space-y-1.5 overflow-y-auto">
+                        <!-- Nav Mobile con Scroll Independiente -->
+                        <nav class="flex-1 px-3 py-4 space-y-1.5 overflow-y-auto">
                             @include('admin.partials.navigation')
                         </nav>
 
-                        <!-- Footer Drawer -->
-                        <div class="px-4 pt-4 border-t border-slate-800 space-y-2">
-                            <a href="{{ route('home') }}" target="_blank" class="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold text-slate-300 bg-slate-900 hover:bg-slate-800 border border-slate-800 transition-colors">
-                                <svg class="w-4 h-4 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <!-- Footer Drawer (Siempre Anclado al Fondo del Móvil) -->
+                        <div class="p-3 border-t border-slate-800/90 bg-slate-950 shrink-0 space-y-2">
+                            <!-- Perfil -->
+                            <div class="flex items-center gap-2.5 p-2 rounded-xl bg-slate-900 border border-slate-800">
+                                <div class="w-8 h-8 rounded-full bg-orange-600/20 text-orange-400 font-bold border border-orange-500/30 flex items-center justify-center text-xs">
+                                    {{ strtoupper(substr(auth()->user()->name ?? 'A', 0, 1)) }}
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-xs font-bold text-white truncate">{{ auth()->user()->name ?? 'Administrador' }}</p>
+                                    <p class="text-[10px] text-slate-400 truncate">{{ auth()->user()->email ?? 'admin@eutex.com' }}</p>
+                                </div>
+                            </div>
+
+                            <!-- Botón Web Pública -->
+                            <a href="{{ route('home') }}" target="_blank" class="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-slate-300 bg-slate-900 hover:bg-slate-800 border border-slate-800 transition-colors">
+                                <svg class="w-3.5 h-3.5 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                                 </svg>
-                                <span>Ver Sitio Web Público</span>
+                                <span>Ver Sitio Web</span>
                             </a>
 
+                            <!-- Cerrar Sesión Móvil -->
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
-                                <button type="submit" class="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold text-rose-400 hover:text-white hover:bg-rose-500/20 transition-colors">
+                                <button type="submit" class="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold text-rose-400 hover:text-white hover:bg-rose-500/20 active:bg-rose-500/30 transition-colors">
                                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                                     </svg>
@@ -107,59 +116,95 @@
             </div>
         </div>
 
-        <!-- SIDEBAR DE ESCRITORIO -->
-        <div class="hidden lg:flex lg:flex-shrink-0">
-            <div class="flex flex-col w-64 bg-slate-950 border-r border-slate-800/80">
-                <!-- Brand / Logo -->
-                <div class="flex items-center gap-3 px-6 h-18 border-b border-slate-800/80 bg-slate-950/60">
-                    <div class="w-9 h-9 rounded-xl bg-orange-600 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-orange-500/25">E</div>
-                    <div>
+        <!-- ========================================================================= -->
+        <!-- 2. SIDEBAR DE ESCRITORIO (FIJO Y ESTÁTICO - NUNCA SE DESPLAZA HACIA ABAJO) -->
+        <!-- ========================================================================= -->
+        <aside :class="sidebarCollapsed ? 'lg:w-20' : 'lg:w-64'"
+               class="hidden lg:flex lg:flex-col lg:fixed lg:inset-y-0 lg:z-30 bg-slate-950 border-r border-slate-800/80 transition-all duration-300 ease-in-out select-none">
+            
+            <!-- 1. Header con Logo y Botón Dinámico de Colapsar -->
+            <div class="h-16 shrink-0 flex items-center px-4 border-b border-slate-800/80 bg-slate-950/70"
+                 :class="sidebarCollapsed ? 'justify-center' : 'justify-between'">
+                 
+                <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 overflow-hidden">
+                    <div class="w-9 h-9 rounded-xl bg-orange-600 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-orange-500/25 shrink-0">E</div>
+                    <div x-show="!sidebarCollapsed" x-transition.opacity.duration.200ms class="truncate">
                         <div class="flex items-center gap-1.5">
-                            <span class="text-xl font-black tracking-wider text-white">EUTEX</span>
+                            <span class="text-lg font-black tracking-wider text-white">EUTEX</span>
                             <span class="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
                         </div>
-                        <span class="block text-[10px] uppercase font-bold tracking-widest text-slate-400">Admin Control</span>
+                        <span class="block text-[9px] uppercase font-bold tracking-widest text-slate-400">Admin Control</span>
                     </div>
-                </div>
+                </a>
 
-                <!-- Nav Links -->
-                <div class="flex flex-col flex-1 overflow-y-auto pt-5 pb-4 px-4">
-                    <nav class="space-y-1.5 flex-1">
-                        @include('admin.partials.navigation')
-                    </nav>
-
-                    <!-- User Footer in Sidebar -->
-                    <div class="pt-4 mt-6 border-t border-slate-800/80">
-                        <div class="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-slate-900/80 border border-slate-800">
-                            <div class="w-9 h-9 rounded-full bg-slate-800 flex items-center justify-center text-orange-400 font-bold border border-slate-700">
-                                {{ strtoupper(substr(auth()->user()->name ?? 'A', 0, 1)) }}
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <p class="text-xs font-bold text-white truncate">{{ auth()->user()->name ?? 'Administrador' }}</p>
-                                <p class="text-[11px] text-slate-400 truncate">{{ auth()->user()->email ?? 'admin@eutex.com' }}</p>
-                            </div>
-                        </div>
-
-                        <form method="POST" action="{{ route('logout') }}" class="mt-2">
-                            @csrf
-                            <button type="submit" class="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs font-bold text-rose-400 hover:text-white hover:bg-rose-500/20 transition-colors">
-                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                                </svg>
-                                Cerrar Sesión
-                            </button>
-                        </form>
-                    </div>
-                </div>
+                <!-- Botón de Colapso Dinámico -->
+                <button type="button" 
+                        @click="toggleCollapse()" 
+                        class="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/80 transition-colors hidden lg:flex items-center justify-center"
+                        :title="sidebarCollapsed ? 'Expandir menú lateral' : 'Colapsar menú lateral'">
+                    <svg class="w-4 h-4 transition-transform duration-300" :class="sidebarCollapsed ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+                    </svg>
+                </button>
             </div>
-        </div>
 
-        <!-- CONTENIDO PRINCIPAL -->
-        <div class="flex flex-col flex-1 min-w-0 overflow-hidden bg-slate-100">
-            <!-- TOP BAR (HEADER STICKY) -->
-            <header class="bg-white/95 backdrop-blur-md border-b border-slate-200 sticky top-0 z-30 shadow-xs">
+            <!-- 2. Navegación Principal con Scroll Independiente -->
+            <div class="flex-1 overflow-y-auto overflow-x-hidden py-4 px-3 space-y-1.5">
+                @include('admin.partials.navigation')
+            </div>
+
+            <!-- 3. FOOTER DEL SIDEBAR: ANCLADO AL FONDO DE LA PANTALLA (NUNCA BAJA) -->
+            <div class="shrink-0 p-3 border-t border-slate-800/80 bg-slate-950/90 space-y-2">
+                <!-- Tarjeta de Perfil -->
+                <div class="flex items-center gap-2.5 p-2 rounded-xl bg-slate-900/90 border border-slate-800"
+                     :class="sidebarCollapsed ? 'justify-center p-1.5' : ''">
+                    <div class="w-8 h-8 rounded-full bg-orange-600/20 text-orange-400 font-bold border border-orange-500/30 flex items-center justify-center shrink-0 text-xs">
+                        {{ strtoupper(substr(auth()->user()->name ?? 'A', 0, 1)) }}
+                    </div>
+                    <div class="flex-1 min-w-0" x-show="!sidebarCollapsed" x-transition.opacity.duration.200ms>
+                        <p class="text-xs font-bold text-white truncate">{{ auth()->user()->name ?? 'Administrador' }}</p>
+                        <p class="text-[10px] text-slate-400 truncate">{{ auth()->user()->email ?? 'admin@eutex.com' }}</p>
+                    </div>
+                </div>
+
+                <!-- Botón Ver Tienda Web -->
+                <a href="{{ route('home') }}" 
+                   target="_blank" 
+                   class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-800/60 transition-colors"
+                   :class="sidebarCollapsed ? 'justify-center px-2' : ''"
+                   title="Ver Sitio Web Público">
+                    <svg class="w-4 h-4 text-orange-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                    <span x-show="!sidebarCollapsed" x-transition.opacity.duration.200ms class="truncate">Ver Tienda Web</span>
+                </a>
+
+                <!-- BOTÓN CERRAR SESIÓN (SIEMPRE VISIBLE EN EL FONDO DE LA PANTALLA) -->
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" 
+                            class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-rose-400 hover:text-white hover:bg-rose-500/20 active:scale-95 transition-all"
+                            :class="sidebarCollapsed ? 'justify-center px-2' : ''"
+                            title="Cerrar Sesión">
+                        <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                        <span x-show="!sidebarCollapsed" x-transition.opacity.duration.200ms class="truncate">Cerrar Sesión</span>
+                    </button>
+                </form>
+            </div>
+        </aside>
+
+        <!-- ========================================================================= -->
+        <!-- 3. CONTENEDOR DE CONTENIDO PRINCIPAL (CON PADDING ADAPTATIVO AL SIDEBAR) -->
+        <!-- ========================================================================= -->
+        <div class="flex-1 flex flex-col min-w-0 transition-all duration-300 ease-in-out"
+             :class="sidebarCollapsed ? 'lg:pl-20' : 'lg:pl-64'">
+            
+            <!-- HEADER STICKY SUPERIOR -->
+            <header class="bg-white/95 backdrop-blur-md border-b border-slate-200 sticky top-0 z-20 shadow-xs">
                 <div class="flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
-                    <!-- Izquierda: Botón Menú Móvil + Título -->
+                    <!-- Izquierda: Botón Hamburguesa Móvil + Título -->
                     <div class="flex items-center gap-3 min-w-0">
                         <button type="button" 
                                 @click="sidebarOpen = true" 
@@ -178,7 +223,7 @@
 
                     <!-- Derecha: Acciones Rápidas -->
                     <div class="flex items-center gap-2 sm:gap-3 shrink-0">
-                        <!-- Enlace al sitio público -->
+                        <!-- Enlace Web -->
                         <a href="{{ route('home') }}" target="_blank" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-300 transition-colors">
                             <svg class="w-3.5 h-3.5 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
@@ -186,7 +231,7 @@
                             <span>Ver Web</span>
                         </a>
 
-                        <!-- Alertas de pendientes (en móvil muestra badge directo a cotizaciones) -->
+                        <!-- Alerta Cotizaciones -->
                         @if($pendingQuotesCount > 0)
                             <a href="{{ route('admin.quotes.index', ['status' => 'pending']) }}" 
                                class="relative p-2 rounded-xl bg-amber-50 text-amber-700 hover:bg-amber-100 transition-colors"
@@ -200,14 +245,14 @@
                             </a>
                         @endif
 
-                        <!-- Botón de acción rápida superior -->
+                        <!-- Botón de acción rápida superior de la vista -->
                         @yield('header_action')
                     </div>
                 </div>
             </header>
 
-            <!-- CONTENEDOR DE CONTENIDO (CON ESPACIO INFERIOR PARA BARRA MÓVIL) -->
-            <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 pb-24 sm:pb-8">
+            <!-- CUERPO PRINCIPAL -->
+            <main class="flex-1 p-4 sm:p-6 lg:p-8 pb-24 sm:pb-8">
                 <!-- NOTIFICACIONES FLASH -->
                 @if(session('success'))
                     <div class="mb-4 sm:mb-6 p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-start gap-3 shadow-xs" x-data="{ show: true }" x-show="show">
@@ -251,7 +296,7 @@
     </div>
 
     <!-- ========================================================================= -->
-    <!-- BARRA DE NAVEGACIÓN INFERIOR PARA MÓVILES (ESTILO APP MÓVIL NATIVA) -->
+    <!-- 4. BARRA DE NAVEGACIÓN INFERIOR PARA MÓVILES (ESTILO APP MÓVIL) -->
     <!-- ========================================================================= -->
     <nav class="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200/90 shadow-2xl px-2 py-1.5 flex items-center justify-around safe-bottom">
         <!-- 1. Inicio -->
