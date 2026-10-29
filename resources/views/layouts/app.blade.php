@@ -377,6 +377,9 @@
                 <div class="flex items-center gap-6">
                     <span class="text-slate-400 font-medium">Atención: 920 783 202</span>
                     <a href="https://wa.me/51920783202" target="_blank" class="text-emerald-400 hover:underline font-semibold">WhatsApp Oficial</a>
+                    <a href="{{ route('admin.dashboard') }}" class="text-slate-600 hover:text-orange-400 text-[11px] transition-colors" title="Acceso al Panel de Administración">
+                        Acceso Admin
+                    </a>
                 </div>
             </div>
         </div>

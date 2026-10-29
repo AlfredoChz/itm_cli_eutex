@@ -8,6 +8,18 @@ use App\Http\Controllers\QuoteController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\BlogController;
 
+// Admin Controllers
+use App\Http\Controllers\Admin\AuthController as AdminAuthController;
+use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\ProductController as AdminProductController;
+use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
+use App\Http\Controllers\Admin\QuoteController as AdminQuoteController;
+use App\Http\Controllers\Admin\MessageController as AdminMessageController;
+
+// -------------------------------------------------------------
+// PUBLIC WEBSITE ROUTES (EUTEX CATÁLOGO & CORPORATIVO)
+// -------------------------------------------------------------
+
 // Landing & General Pages
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/nosotros', [PageController::class, 'nosotros'])->name('nosotros');
@@ -35,3 +47,35 @@ Route::post('/cotizacion', [QuoteController::class, 'store'])->name('quote.store
 // Legal & Compliance
 Route::get('/libro-de-reclamaciones', [PageController::class, 'libroReclamaciones'])->name('libro-reclamaciones');
 Route::post('/libro-de-reclamaciones', [PageController::class, 'storeLibroReclamaciones'])->name('libro-reclamaciones.store');
+
+// -------------------------------------------------------------
+// ADMIN PANEL ROUTES (EUTEX CONTROL CENTER)
+// -------------------------------------------------------------
+
+// Admin Authentication
+Route::get('/admin/login', [AdminAuthController::class, 'showLogin'])->name('login');
+Route::post('/admin/login', [AdminAuthController::class, 'login'])->name('login.post');
+Route::post('/admin/logout', [AdminAuthController::class, 'logout'])->name('logout');
+
+// Admin Protected Routes (Require Authentication)
+Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
+    Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
+    
+    // Products Management
+    Route::resource('productos', AdminProductController::class)->names('products');
+    Route::post('productos/{product}/destacar', [AdminProductController::class, 'toggleFeatured'])->name('products.toggle-featured');
+
+    // Categories Management
+    Route::resource('categorias', AdminCategoryController::class)->names('categories');
+
+    // Quotes Management
+    Route::get('cotizaciones', [AdminQuoteController::class, 'index'])->name('quotes.index');
+    Route::get('cotizaciones/{quote}', [AdminQuoteController::class, 'show'])->name('quotes.show');
+    Route::patch('cotizaciones/{quote}/estado', [AdminQuoteController::class, 'updateStatus'])->name('quotes.status');
+    Route::delete('cotizaciones/{quote}', [AdminQuoteController::class, 'destroy'])->name('quotes.destroy');
+
+    // Messages Management
+    Route::get('mensajes', [AdminMessageController::class, 'index'])->name('messages.index');
+    Route::get('mensajes/{message}', [AdminMessageController::class, 'show'])->name('messages.show');
+    Route::delete('mensajes/{message}', [AdminMessageController::class, 'destroy'])->name('messages.destroy');
+});

@@ -6,6 +6,8 @@ use Illuminate\Database\Seeder;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\BlogPost;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -14,6 +16,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // 0. Default Administrator User
+        User::firstOrCreate(
+            ['email' => 'admin@eutex.com'],
+            [
+                'name' => 'Administrador EUTEX',
+                'password' => Hash::make('admin1234'),
+            ]
+        );
+
         // 1. Categories
         $categories = [
             [

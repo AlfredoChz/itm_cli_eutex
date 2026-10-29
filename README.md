@@ -22,6 +22,14 @@ Plataforma web desarrollada en **Laravel 12** inspirada en el estándar de dise�
   - Servicios: Bordado computarizado, estampado serigráfico de alta durabilidad, desarrollo textil a medida y distribución a nivel nacional.
   - Blog Técnico: Artículos especializados en normativas de seguridad laboral, selección de telas industriales y certificaciones ANSI/NTP.
   - Libro de Reclamaciones conforme a las disposiciones de INDECOPI.
+- **Panel de Administración (`/admin`)**:
+  - Acceso seguro mediante login (`/admin/login`).
+  - Dashboard con estadísticas en tiempo real de productos, cotizaciones y mensajes.
+  - Gestión integral (CRUD) de Productos (con subida de imágenes, variantes de color/talla y destacados).
+  - Gestión de Categorías y Líneas Industriales.
+  - Bandeja de Cotizaciones con botón directo para responder por WhatsApp al cliente.
+  - Bandeja de Mensajes de contacto.
+  - **Credenciales de acceso inicial:** Usuario: `admin@eutex.com` | Contraseña: `admin1234`.
 - **Diseño Responsivo y Moderno**: Paleta de color industrial (Azul Marino Profundo `#0B1B3D`, Naranja Seguridad `#FF5500`), tipografía Inter/Montserrat, micro-animaciones y soporte móvil completo.
 
 ---
