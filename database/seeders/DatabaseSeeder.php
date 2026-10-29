@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
                 'slug' => 'polos-industriales',
                 'description' => 'Polos manga larga y corta en algodón de primera calidad, cuello redondo y piqué, diseñados para trabajo pesado y uso corporativo con bordado personalizado.',
                 'icon' => 'shirt',
-                'image' => '/images/eutex/polos_manga_larga.png',
+                'image' => '/images/products/polo-manga-larga-cuello-redondo.jpg',
                 'order' => 1,
             ],
             [
@@ -29,7 +29,7 @@ class DatabaseSeeder extends Seeder
                 'slug' => 'chalecos-seguridad',
                 'description' => 'Chalecos de alta visibilidad con cintas reflectivas certificadas de 5 cm, multibolsillos funcionales, cierre frontal y acabados de alta resistencia.',
                 'icon' => 'shield',
-                'image' => '/images/eutex/chalecos_seguridad.png',
+                'image' => '/images/products/chaleco-seguridad-geologo.jpg',
                 'order' => 2,
             ],
             [
@@ -37,7 +37,7 @@ class DatabaseSeeder extends Seeder
                 'slug' => 'pantalones-jeans',
                 'description' => 'Jeans industriales 14 oz y pantalones cargo en drill con cintas reflectivas 3M, triple costura de seguridad y bolsillos utilitarios reforzados.',
                 'icon' => 'layers',
-                'image' => '/images/eutex/jeans_industriales.png',
+                'image' => '/images/products/pantalon-jean-industrial-14oz.jpg',
                 'order' => 3,
             ],
             [
@@ -45,7 +45,7 @@ class DatabaseSeeder extends Seeder
                 'slug' => 'mamelucos-overoles',
                 'description' => 'Overoles enteros en drill y telas especiales ignífugas con bandas reflectivas 360°, cierres doble sentido y ajuste ergonómico para faenas mineras y operativas.',
                 'icon' => 'user-check',
-                'image' => '/images/eutex/banner_principal.png',
+                'image' => '/images/products/mameluco-industrial-drill.jpg',
                 'order' => 4,
             ],
             [
@@ -53,7 +53,7 @@ class DatabaseSeeder extends Seeder
                 'slug' => 'casacas-ropa-termica',
                 'description' => 'Casacas acolchadas impermeables, cortavientos térmicos y ropa de protección para climas extremos en campamentos mineros y construcción.',
                 'icon' => 'sun',
-                'image' => '/images/eutex/banner_principal.png',
+                'image' => '/images/products/casaca-termica-impermeable-minera.jpg',
                 'order' => 5,
             ],
             [
@@ -61,7 +61,7 @@ class DatabaseSeeder extends Seeder
                 'slug' => 'epp-seguridad',
                 'description' => 'Complementos de seguridad integral: cascos normados, guantes de maniobra en badana y nitrilo, lentes de policarbonato y calzado de seguridad con puntera de acero.',
                 'icon' => 'hard-hat',
-                'image' => '/images/eutex/tarjeta_contacto.png',
+                'image' => '/images/products/kit-proteccion-personal-epp.jpg',
                 'order' => 6,
             ],
         ];
@@ -97,10 +97,10 @@ class DatabaseSeeder extends Seeder
                 ],
                 'colors' => ['Blanco', 'Negro', 'Azul Marino', 'Azul Rey', 'Rojo', 'Gris Jaspe', 'Plomo', 'Verde Oliva', 'Beige', 'Amarillo Neón'],
                 'sizes' => ['S', 'M', 'L', 'XL', 'XXL'],
-                'image' => '/images/eutex/polos_manga_larga.png',
+                'image' => '/images/products/polo-manga-larga-cuello-redondo.jpg',
                 'gallery' => [
-                    '/images/eutex/polos_manga_larga.png',
-                    '/images/eutex/banner_principal.png'
+                    '/images/products/polo-manga-larga-cuello-redondo.jpg',
+                    '/images/eutex/polos_manga_larga.png'
                 ],
                 'badge' => 'Más Vendido • 10 Colores',
                 'is_featured' => true,
@@ -129,10 +129,10 @@ class DatabaseSeeder extends Seeder
                 ],
                 'colors' => ['Naranja', 'Amarillo Neón', 'Azul Marino', 'Negro'],
                 'sizes' => ['S', 'M', 'L', 'XL', 'XXL'],
-                'image' => '/images/eutex/chalecos_seguridad.png',
+                'image' => '/images/products/chaleco-seguridad-geologo.jpg',
                 'gallery' => [
-                    '/images/eutex/chalecos_seguridad.png',
-                    '/images/eutex/banner_principal.png'
+                    '/images/products/chaleco-seguridad-geologo.jpg',
+                    '/images/eutex/chalecos_seguridad.png'
                 ],
                 'badge' => 'Norma ANSI 107 • Alta Visibilidad',
                 'is_featured' => true,
@@ -161,10 +161,10 @@ class DatabaseSeeder extends Seeder
                 ],
                 'colors' => ['Azul Denim Clásico', 'Azul Índigo Oscuro'],
                 'sizes' => ['28', '30', '32', '34', '36', '38', '40', '42'],
-                'image' => '/images/eutex/jeans_industriales.png',
+                'image' => '/images/products/pantalon-jean-industrial-14oz.jpg',
                 'gallery' => [
-                    '/images/eutex/jeans_industriales.png',
-                    '/images/eutex/banner_principal.png'
+                    '/images/products/pantalon-jean-industrial-14oz.jpg',
+                    '/images/eutex/jeans_industriales.png'
                 ],
                 'badge' => 'Denim 14 oz • Triple Costura',
                 'is_featured' => true,
@@ -192,9 +192,9 @@ class DatabaseSeeder extends Seeder
                 ],
                 'colors' => ['Azul Marino', 'Azul Rey', 'Negro', 'Caqui'],
                 'sizes' => ['28', '30', '32', '34', '36', '38', '40'],
-                'image' => '/images/eutex/banner_principal.png',
+                'image' => '/images/products/pantalon-cargo-industrial-drill.jpg',
                 'gallery' => [
-                    '/images/eutex/banner_principal.png',
+                    '/images/products/pantalon-cargo-industrial-drill.jpg',
                     '/images/eutex/jeans_industriales.png'
                 ],
                 'badge' => '6 Bolsillos • Drill Pesado',
@@ -223,9 +223,9 @@ class DatabaseSeeder extends Seeder
                 ],
                 'colors' => ['Naranja Neón', 'Amarillo Neón'],
                 'sizes' => ['S', 'M', 'L', 'XL', 'XXL'],
-                'image' => '/images/eutex/banner_principal.png',
+                'image' => '/images/products/polo-alta-visibilidad-reflectivo.jpg',
                 'gallery' => [
-                    '/images/eutex/banner_principal.png',
+                    '/images/products/polo-alta-visibilidad-reflectivo.jpg',
                     '/images/eutex/polos_manga_larga.png'
                 ],
                 'badge' => 'Clase 3 • Filtro UPF 50+',
@@ -254,9 +254,9 @@ class DatabaseSeeder extends Seeder
                 ],
                 'colors' => ['Gris Melange', 'Azul Rey', 'Azul Marino', 'Blanco', 'Negro'],
                 'sizes' => ['S', 'M', 'L', 'XL', 'XXL'],
-                'image' => '/images/eutex/banner_principal.png',
+                'image' => '/images/products/polo-pique-ejecutivo.jpg',
                 'gallery' => [
-                    '/images/eutex/banner_principal.png'
+                    '/images/products/polo-pique-ejecutivo.jpg'
                 ],
                 'badge' => 'Línea Corporativa • Piqué 24/1',
                 'is_featured' => false,
@@ -284,9 +284,9 @@ class DatabaseSeeder extends Seeder
                 ],
                 'colors' => ['Azul Marino', 'Naranja', 'Azul Rey', 'Rojo'],
                 'sizes' => ['S', 'M', 'L', 'XL', 'XXL'],
-                'image' => '/images/eutex/banner_principal.png',
+                'image' => '/images/products/mameluco-industrial-drill.jpg',
                 'gallery' => [
-                    '/images/eutex/banner_principal.png'
+                    '/images/products/mameluco-industrial-drill.jpg'
                 ],
                 'badge' => 'Minería & Construcción • 360° Reflectivo',
                 'is_featured' => true,
@@ -314,9 +314,9 @@ class DatabaseSeeder extends Seeder
                 ],
                 'colors' => ['Azul Marino con Naranja', 'Negro con Amarillo Neón', 'Azul Marino'],
                 'sizes' => ['S', 'M', 'L', 'XL', 'XXL'],
-                'image' => '/images/eutex/banner_principal.png',
+                'image' => '/images/products/casaca-termica-impermeable-minera.jpg',
                 'gallery' => [
-                    '/images/eutex/banner_principal.png'
+                    '/images/products/casaca-termica-impermeable-minera.jpg'
                 ],
                 'badge' => 'Térmica & Impermeable • Alto Frío',
                 'is_featured' => false,
@@ -343,10 +343,9 @@ class DatabaseSeeder extends Seeder
                 ],
                 'colors' => ['Blanco', 'Amarillo', 'Azul', 'Naranja'],
                 'sizes' => ['Estándar regulable'],
-                'image' => '/images/eutex/tarjeta_contacto.png',
+                'image' => '/images/products/kit-proteccion-personal-epp.jpg',
                 'gallery' => [
-                    '/images/eutex/tarjeta_contacto.png',
-                    '/images/eutex/banner_principal.png'
+                    '/images/products/kit-proteccion-personal-epp.jpg'
                 ],
                 'badge' => 'Certificación ANSI • Entrega Inmediata',
                 'is_featured' => false,
