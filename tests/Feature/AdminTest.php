@@ -190,6 +190,31 @@ class AdminTest extends TestCase
         $this->assertEquals('ventas_nuevas@eutex.com', setting('contact_email'));
     }
 
+    public function test_admin_can_delete_banner(): void
+    {
+        $user = User::where('email', 'admin@eutex.com')->first();
+        $this->actingAs($user);
+
+        // Set 2 test banners
+        \App\Models\SiteSetting::set('home_banners', [
+            ['title' => 'Banner Alfa', 'image' => '/img1.jpg', 'is_active' => true],
+            ['title' => 'Banner Beta', 'image' => '/img2.jpg', 'is_active' => true],
+        ], 'home');
+
+        $this->assertCount(2, \App\Models\SiteSetting::get('home_banners'));
+
+        // Delete index 0 (Banner Alfa)
+        $res = $this->post(route('admin.pages.update', 'banners'), [
+            'action' => 'delete',
+            'banner_index' => 0,
+        ]);
+
+        $res->assertRedirect(route('admin.pages.index', ['tab' => 'banners']));
+        $banners = \App\Models\SiteSetting::get('home_banners');
+        $this->assertCount(1, $banners);
+        $this->assertEquals('Banner Beta', $banners[0]['title']);
+    }
+
     public function test_admin_can_create_product_with_multiple_images(): void
     {
         $user = User::where('email', 'admin@eutex.com')->first();

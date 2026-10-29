@@ -39,7 +39,16 @@
         existingGallery: {{ json_encode(!empty($product->gallery) ? array_values(array_unique(array_filter($product->gallery))) : ($product->image ? [$product->image] : [])) }},
         galleryPreviews: [],
         removeGalleryItem(idx) {
+            const removed = this.existingGallery[idx];
             this.existingGallery.splice(idx, 1);
+            if (this.mainImagePath === removed) {
+                if (this.existingGallery.length > 0) {
+                    this.setAsCover(this.existingGallery[0]);
+                } else {
+                    this.mainImagePath = '';
+                    this.previewImage = '';
+                }
+            }
         },
         setAsCover(img) {
             this.mainImagePath = img;
@@ -146,14 +155,16 @@
                 </div>
 
                 <!-- Inputs ocultos para sincronizar la galería existente -->
-                <template x-for="(img, idx) in existingGallery" :key="idx">
+                <input type="hidden" name="existing_gallery_present" value="1">
+                <input type="hidden" name="existing_gallery_json" :value="JSON.stringify(existingGallery)">
+                <template x-for="(img, idx) in existingGallery" :key="'img-'+idx+'-'+img">
                     <input type="hidden" name="existing_gallery[]" :value="img">
                 </template>
 
                 <!-- Cuadrícula de fotos existentes -->
                 <template x-if="existingGallery.length > 0">
                     <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-3 p-3 bg-slate-50 rounded-2xl border border-slate-200">
-                        <template x-for="(img, idx) in existingGallery" :key="idx">
+                        <template x-for="(img, idx) in existingGallery" :key="'item-'+idx+'-'+img">
                             <div class="relative group bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs flex flex-col">
                                 <div class="aspect-square w-full overflow-hidden bg-slate-100 flex items-center justify-center p-1">
                                     <img :src="img.startsWith('http') ? img : ('{{ asset('') }}' + img.replace(/^\//, ''))" 
@@ -170,11 +181,12 @@
 
                                     <button type="button" 
                                             @click="removeGalleryItem(idx)" 
-                                            class="p-1 rounded text-rose-500 hover:text-white hover:bg-rose-600 transition-colors" 
-                                            title="Eliminar esta foto">
+                                            class="inline-flex items-center gap-1 p-1 px-1.5 rounded-lg text-rose-500 hover:text-white hover:bg-rose-600 transition-colors text-[10px] font-bold" 
+                                            title="Eliminar esta foto de la galería">
                                         <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                         </svg>
+                                        <span>Borrar</span>
                                     </button>
                                 </div>
                             </div>

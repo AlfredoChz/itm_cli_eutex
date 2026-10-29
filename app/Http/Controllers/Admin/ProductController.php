@@ -191,13 +191,23 @@ class ProductController extends Controller
         }
 
         // 2. Galería de Fotos (Conserva las fotos existentes que no se hayan eliminado)
-        $gallery = $request->input('existing_gallery', []);
-        if (!is_array($gallery)) {
-            $gallery = [];
+        $gallery = [];
+        if ($request->filled('existing_gallery_json')) {
+            $gallery = json_decode($request->input('existing_gallery_json'), true) ?: [];
+        } elseif ($request->has('existing_gallery')) {
+            $gallery = (array)$request->input('existing_gallery', []);
         }
 
-        // Asegurar que la imagen principal esté en la galería
-        if ($imagePath && !in_array($imagePath, $gallery)) {
+        // Si se envió la gestión de galería y el usuario quitó la foto principal
+        if ($request->has('existing_gallery_present') || $request->filled('existing_gallery_json')) {
+            if ($imagePath && !in_array($imagePath, $gallery)) {
+                if (!empty($gallery)) {
+                    $imagePath = $gallery[0];
+                } elseif (!$request->hasFile('image_file') && empty($validated['image_url']) && empty($validated['main_image_path'])) {
+                    $imagePath = null;
+                }
+            }
+        } elseif ($imagePath && !in_array($imagePath, $gallery)) {
             array_unshift($gallery, $imagePath);
         }
 

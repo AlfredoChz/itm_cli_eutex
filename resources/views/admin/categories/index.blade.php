@@ -144,7 +144,7 @@
                                         </svg>
                                     </a>
 
-                                    <form method="POST" action="{{ route('admin.categories.destroy', $category) }}" onsubmit="return confirm('¿Seguro que deseas eliminar la categoría {{ $category->name }}?');">
+                                    <form method="POST" action="{{ route('admin.categories.destroy', $category) }}" onsubmit="return confirm('¿Seguro que deseas eliminar esta categoría?');">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" 

@@ -275,7 +275,7 @@
                                         </a>
 
                                         <!-- Eliminar -->
-                                        <form method="POST" action="{{ route('admin.products.destroy', $product) }}" onsubmit="return confirm('¿Seguro que deseas eliminar el producto {{ $product->name }}?');">
+                                        <form method="POST" action="{{ route('admin.products.destroy', $product) }}" onsubmit="return confirm('¿Seguro que deseas eliminar este producto?');">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" 

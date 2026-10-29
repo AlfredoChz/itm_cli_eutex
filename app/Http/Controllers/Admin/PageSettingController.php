@@ -184,10 +184,14 @@ class PageSettingController extends Controller
             $index = (int)$request->input('banner_index', -1);
             if (isset($banners[$index])) {
                 array_splice($banners, $index, 1);
+                $banners = array_values($banners);
                 SiteSetting::set('home_banners', $banners, 'home');
                 return redirect()->route('admin.pages.index', ['tab' => 'banners'])
                     ->with('success', 'Banner eliminado correctamente.');
             }
+
+            return redirect()->route('admin.pages.index', ['tab' => 'banners'])
+                ->with('error', 'No se encontró el banner seleccionado para eliminar.');
         }
 
         if ($action === 'save_all') {

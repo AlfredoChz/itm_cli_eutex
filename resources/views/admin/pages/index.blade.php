@@ -261,13 +261,14 @@
                                     <span>Activo en Web</span>
                                 </label>
 
-                                <button type="submit" 
-                                        name="action" 
-                                        value="delete" 
-                                        onclick="document.getElementById('banner_delete_idx').value = {{ $index }}; return confirm('¿Eliminar este banner?');"
-                                        class="p-1.5 rounded-lg text-rose-500 hover:text-white hover:bg-rose-600 transition-colors"
+                                <button type="button" 
+                                        onclick="if(confirm('¿Seguro que deseas eliminar el Banner #{{ $index + 1 }}?')) { document.getElementById('delete_banner_form_{{ $index }}').submit(); }"
+                                        class="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-rose-600 hover:text-white bg-rose-50 hover:bg-rose-600 border border-rose-200 transition-all font-bold text-xs cursor-pointer shadow-xs active:scale-95"
                                         title="Eliminar este banner">
-                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                    <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                    <span>Borrar</span>
                                 </button>
                             </div>
                         </div>
@@ -364,6 +365,18 @@
                 </div>
             @endif
         </form>
+
+        <!-- FORMULARIOS INDEPENDIENTES PARA BORRAR CADA BANNER -->
+        @foreach($banners as $index => $banner)
+            <form id="delete_banner_form_{{ $index }}" 
+                  method="POST" 
+                  action="{{ route('admin.pages.update', 'banners') }}" 
+                  class="hidden">
+                @csrf
+                <input type="hidden" name="action" value="delete">
+                <input type="hidden" name="banner_index" value="{{ $index }}">
+            </form>
+        @endforeach
 
         <!-- FORMULARIO: AGREGAR NUEVO BANNER -->
         <div class="bg-white rounded-2xl border-2 border-dashed border-orange-300 p-5 sm:p-6 space-y-4">
