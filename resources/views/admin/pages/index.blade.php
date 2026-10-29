@@ -5,70 +5,211 @@
 @section('header_subtitle', 'Personaliza banners, datos de contacto, textos de Nosotros y Servicios en tiempo real')
 
 @section('content')
-<div class="space-y-6" x-data="{ tab: '{{ $activeTab }}' }">
+<div class="space-y-6" 
+     x-data="{ 
+        tab: '{{ $activeTab }}',
+        dropdownOpen: false,
+        sections: {
+            banners: {
+                title: 'Banners de Inicio',
+                subtitle: 'Slider horizontal principal en la portada de la web',
+                badge: '{{ count($banners) }} activos'
+            },
+            contacto: {
+                title: 'Contacto & WhatsApp',
+                subtitle: 'Teléfonos, WhatsApp directo, correo y horario de atención',
+                badge: null
+            },
+            nosotros: {
+                title: 'Página Nosotros',
+                subtitle: 'Historia de marca, propósito, misión, visión y estadísticas',
+                badge: null
+            },
+            servicios: {
+                title: 'Página Servicios',
+                subtitle: 'Capacidades de confección textil, corte industrial y bordado',
+                badge: '{{ count($servicios) }} activos'
+            },
+            redes: {
+                title: 'Redes & Pie de Página',
+                subtitle: 'Redes sociales, texto legal de marca y enlaces del footer',
+                badge: null
+            }
+        },
+        selectTab(key) {
+            this.tab = key;
+            this.dropdownOpen = false;
+            if (window.history && window.history.replaceState) {
+                const url = new URL(window.location);
+                url.searchParams.set('tab', key);
+                window.history.replaceState({}, '', url);
+            }
+        }
+     }">
 
     <!-- ======================================================== -->
-    <!-- NAVEGACIÓN POR PESTAÑAS (TABS MODERNOS & RESPONSIVOS) -->
+    <!-- SELECTOR DESPLEGABLE DE SECCIÓN (DROPDOWN MODERNO) -->
     <!-- ======================================================== -->
-    <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs p-1.5 overflow-x-auto scrollbar-none">
-        <div class="flex items-center gap-1.5 min-w-max">
-            <!-- 1. Banners -->
-            <button type="button" 
-                    @click="tab = 'banners'"
-                    :class="tab === 'banners' ? 'bg-orange-600 text-white font-bold shadow-md shadow-orange-600/30' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-semibold'"
-                    class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm transition-all duration-200">
-                <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-                <span>Banners de Inicio</span>
-                <span class="text-[10px] px-1.5 py-0.2 rounded-full" :class="tab === 'banners' ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-700'">
-                    {{ count($banners) }}
-                </span>
-            </button>
+    <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs p-4 sm:p-5">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            
+            <!-- Etiqueta informativa -->
+            <div>
+                <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-orange-500 animate-pulse"></span>
+                    <span class="text-xs font-black uppercase tracking-wider text-slate-800">Sección de la Página a Editar</span>
+                </div>
+                <p class="text-xs text-slate-500 mt-0.5">Selecciona en el menú desplegable la página o bloque que deseas modificar</p>
+            </div>
 
-            <!-- 2. Contacto -->
-            <button type="button" 
-                    @click="tab = 'contacto'"
-                    :class="tab === 'contacto' ? 'bg-orange-600 text-white font-bold shadow-md shadow-orange-600/30' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-semibold'"
-                    class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm transition-all duration-200">
-                <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                </svg>
-                <span>Contacto & WhatsApp</span>
-            </button>
+            <!-- Menú Desplegable con Alpine.js -->
+            <div class="relative w-full md:w-96" @click.outside="dropdownOpen = false">
+                <!-- Botón Gatillo del Desplegable -->
+                <button type="button" 
+                        @click="dropdownOpen = !dropdownOpen"
+                        class="w-full flex items-center justify-between gap-3 px-4 py-3 bg-slate-50 hover:bg-slate-100/90 border-2 border-slate-200 hover:border-orange-500 rounded-xl transition-all duration-200 text-left shadow-xs focus:outline-none focus:ring-2 focus:ring-orange-500/20 group">
+                    <div class="flex items-center gap-3 min-w-0">
+                        <!-- Icono según sección activa -->
+                        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-orange-500 to-amber-600 text-white flex items-center justify-center shrink-0 shadow-sm shadow-orange-500/20">
+                            <template x-if="tab === 'banners'">
+                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            </template>
+                            <template x-if="tab === 'contacto'">
+                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                            </template>
+                            <template x-if="tab === 'nosotros'">
+                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                            </template>
+                            <template x-if="tab === 'servicios'">
+                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                            </template>
+                            <template x-if="tab === 'redes'">
+                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+                            </template>
+                        </div>
+                        <div class="min-w-0">
+                            <span class="block text-xs font-bold text-slate-900 truncate" x-text="sections[tab]?.title || 'Seleccionar'"></span>
+                            <span class="block text-[11px] text-slate-500 truncate" x-text="sections[tab]?.subtitle || ''"></span>
+                        </div>
+                    </div>
+                    <!-- Flecha indicadora -->
+                    <div class="flex items-center gap-1.5 shrink-0">
+                        <span class="text-[10px] uppercase font-bold text-orange-600 bg-orange-100 px-2 py-0.5 rounded-md hidden sm:inline-block">Desplegar</span>
+                        <svg class="w-5 h-5 text-slate-400 group-hover:text-orange-600 transition-transform duration-200" :class="dropdownOpen ? 'rotate-180 text-orange-600' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </div>
+                </button>
 
-            <!-- 3. Nosotros -->
-            <button type="button" 
-                    @click="tab = 'nosotros'"
-                    :class="tab === 'nosotros' ? 'bg-orange-600 text-white font-bold shadow-md shadow-orange-600/30' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-semibold'"
-                    class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm transition-all duration-200">
-                <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                </svg>
-                <span>Página Nosotros</span>
-            </button>
+                <!-- Menú Desplegable Flotante -->
+                <div x-show="dropdownOpen" 
+                     x-transition:enter="transition ease-out duration-150"
+                     x-transition:enter-start="opacity-0 -translate-y-1 scale-98"
+                     x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                     x-transition:leave="transition ease-in duration-100"
+                     x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+                     x-transition:leave-end="opacity-0 -translate-y-1 scale-98"
+                     class="absolute right-0 left-0 mt-2 z-50 bg-white rounded-2xl border border-slate-200 shadow-xl overflow-hidden py-1 divide-y divide-slate-100"
+                     style="display: none;">
+                    
+                    <!-- 1. Banners de Inicio -->
+                    <button type="button" 
+                            @click="selectTab('banners')"
+                            :class="tab === 'banners' ? 'bg-orange-50/80 text-orange-950 font-bold' : 'text-slate-700 hover:bg-slate-50'"
+                            class="w-full flex items-center justify-between gap-3 px-3.5 py-3 text-left transition-colors">
+                        <div class="flex items-center gap-3 min-w-0">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" :class="tab === 'banners' ? 'bg-orange-600 text-white shadow-xs' : 'bg-slate-100 text-slate-600'">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            </div>
+                            <div class="min-w-0">
+                                <span class="text-xs font-bold block text-slate-900">Banners de Inicio</span>
+                                <span class="text-[11px] text-slate-500 block truncate">Slider horizontal de la página principal</span>
+                            </div>
+                        </div>
+                        <span class="text-[10px] px-2 py-0.5 rounded-full font-bold shrink-0" :class="tab === 'banners' ? 'bg-orange-600 text-white' : 'bg-slate-100 text-slate-600'">
+                            {{ count($banners) }} activos
+                        </span>
+                    </button>
 
-            <!-- 4. Servicios -->
-            <button type="button" 
-                    @click="tab = 'servicios'"
-                    :class="tab === 'servicios' ? 'bg-orange-600 text-white font-bold shadow-md shadow-orange-600/30' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-semibold'"
-                    class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm transition-all duration-200">
-                <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-                <span>Página Servicios</span>
-            </button>
+                    <!-- 2. Contacto & WhatsApp -->
+                    <button type="button" 
+                            @click="selectTab('contacto')"
+                            :class="tab === 'contacto' ? 'bg-orange-50/80 text-orange-950 font-bold' : 'text-slate-700 hover:bg-slate-50'"
+                            class="w-full flex items-center justify-between gap-3 px-3.5 py-3 text-left transition-colors">
+                        <div class="flex items-center gap-3 min-w-0">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" :class="tab === 'contacto' ? 'bg-orange-600 text-white shadow-xs' : 'bg-slate-100 text-slate-600'">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                            </div>
+                            <div class="min-w-0">
+                                <span class="text-xs font-bold block text-slate-900">Contacto & WhatsApp</span>
+                                <span class="text-[11px] text-slate-500 block truncate">Teléfonos, WhatsApp de ventas y dirección</span>
+                            </div>
+                        </div>
+                        <template x-if="tab === 'contacto'">
+                            <span class="text-orange-600 font-bold text-xs">✓ Activo</span>
+                        </template>
+                    </button>
 
-            <!-- 5. Redes & Footer -->
-            <button type="button" 
-                    @click="tab = 'redes'"
-                    :class="tab === 'redes' ? 'bg-orange-600 text-white font-bold shadow-md shadow-orange-600/30' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-semibold'"
-                    class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm transition-all duration-200">
-                <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-                </svg>
-                <span>Redes & Pie de Página</span>
-            </button>
+                    <!-- 3. Página Nosotros -->
+                    <button type="button" 
+                            @click="selectTab('nosotros')"
+                            :class="tab === 'nosotros' ? 'bg-orange-50/80 text-orange-950 font-bold' : 'text-slate-700 hover:bg-slate-50'"
+                            class="w-full flex items-center justify-between gap-3 px-3.5 py-3 text-left transition-colors">
+                        <div class="flex items-center gap-3 min-w-0">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" :class="tab === 'nosotros' ? 'bg-orange-600 text-white shadow-xs' : 'bg-slate-100 text-slate-600'">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                            </div>
+                            <div class="min-w-0">
+                                <span class="text-xs font-bold block text-slate-900">Página Nosotros</span>
+                                <span class="text-[11px] text-slate-500 block truncate">Historia, propósito, misión y métricas</span>
+                            </div>
+                        </div>
+                        <template x-if="tab === 'nosotros'">
+                            <span class="text-orange-600 font-bold text-xs">✓ Activo</span>
+                        </template>
+                    </button>
+
+                    <!-- 4. Página Servicios -->
+                    <button type="button" 
+                            @click="selectTab('servicios')"
+                            :class="tab === 'servicios' ? 'bg-orange-50/80 text-orange-950 font-bold' : 'text-slate-700 hover:bg-slate-50'"
+                            class="w-full flex items-center justify-between gap-3 px-3.5 py-3 text-left transition-colors">
+                        <div class="flex items-center gap-3 min-w-0">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" :class="tab === 'servicios' ? 'bg-orange-600 text-white shadow-xs' : 'bg-slate-100 text-slate-600'">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                            </div>
+                            <div class="min-w-0">
+                                <span class="text-xs font-bold block text-slate-900">Página Servicios</span>
+                                <span class="text-[11px] text-slate-500 block truncate">Capacidades de confección y bordado</span>
+                            </div>
+                        </div>
+                        <span class="text-[10px] px-2 py-0.5 rounded-full font-bold shrink-0" :class="tab === 'servicios' ? 'bg-orange-600 text-white' : 'bg-slate-100 text-slate-600'">
+                            {{ count($servicios) }} activos
+                        </span>
+                    </button>
+
+                    <!-- 5. Redes & Pie de Página -->
+                    <button type="button" 
+                            @click="selectTab('redes')"
+                            :class="tab === 'redes' ? 'bg-orange-50/80 text-orange-950 font-bold' : 'text-slate-700 hover:bg-slate-50'"
+                            class="w-full flex items-center justify-between gap-3 px-3.5 py-3 text-left transition-colors">
+                        <div class="flex items-center gap-3 min-w-0">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" :class="tab === 'redes' ? 'bg-orange-600 text-white shadow-xs' : 'bg-slate-100 text-slate-600'">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+                            </div>
+                            <div class="min-w-0">
+                                <span class="text-xs font-bold block text-slate-900">Redes & Pie de Página</span>
+                                <span class="text-[11px] text-slate-500 block truncate">Redes sociales, copy legal y footer</span>
+                            </div>
+                        </div>
+                        <template x-if="tab === 'redes'">
+                            <span class="text-orange-600 font-bold text-xs">✓ Activo</span>
+                        </template>
+                    </button>
+
+                </div>
+            </div>
+
         </div>
     </div>
 

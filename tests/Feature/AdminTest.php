@@ -166,6 +166,13 @@ class AdminTest extends TestCase
         $res->assertStatus(200);
         $res->assertSee('Páginas & Contenido Web');
         $res->assertSee('Banners de Inicio');
+        $res->assertSee('Sección de la Página a Editar');
+
+        // Test GET /admin/paginas?tab=contacto
+        $resContacto = $this->get(route('admin.pages.index', ['tab' => 'contacto']));
+        $resContacto->assertStatus(200);
+        $resContacto->assertSee('Contacto');
+        $resContacto->assertSee('WhatsApp');
 
         // Test POST /admin/paginas/contacto
         $postRes = $this->post(route('admin.pages.update', 'contacto'), [

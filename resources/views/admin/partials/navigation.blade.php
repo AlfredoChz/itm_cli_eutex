@@ -136,28 +136,82 @@
     <!-- ========================================== -->
     <!-- GRUPO 4: CONTENIDO & PÁGINAS WEB (CMS) -->
     <!-- ========================================== -->
-    <div>
+    <div x-data="{ pagesMenuOpen: {{ request()->routeIs('admin.pages.*') ? 'true' : 'false' }} }">
         <div x-show="!sidebarCollapsed" x-transition.opacity.duration.200ms class="px-3 mb-2 flex items-center justify-between">
             <span class="text-[10px] font-black uppercase tracking-widest text-slate-500">Sitio Web & CMS</span>
         </div>
 
         <div class="space-y-1">
-            <!-- PÁGINAS Y CONTENIDOS -->
-            <a href="{{ route('admin.pages.index') }}" 
-               :class="sidebarCollapsed ? 'justify-center px-2' : 'px-3 justify-between'"
-               class="group relative flex items-center gap-3 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 {{ request()->routeIs('admin.pages.*') ? 'bg-gradient-to-r from-orange-600 to-amber-600 text-white shadow-md shadow-orange-600/30 font-bold' : 'text-slate-300 hover:text-white hover:bg-slate-800/80 active:scale-98' }}"
-               title="Gestor de Páginas y Banners">
+            <!-- PÁGINAS Y BANNERS (BOTÓN DESPLEGABLE) -->
+            <button type="button" 
+                    @click="if(sidebarCollapsed) { sidebarCollapsed = false; pagesMenuOpen = true; } else { pagesMenuOpen = !pagesMenuOpen; }"
+                    :class="sidebarCollapsed ? 'justify-center px-2' : 'px-3 justify-between'"
+                    class="w-full group relative flex items-center gap-3 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 {{ request()->routeIs('admin.pages.*') ? 'bg-slate-800/90 text-white font-bold border border-slate-700/60 shadow-sm' : 'text-slate-300 hover:text-white hover:bg-slate-800/80 active:scale-98' }}"
+                    title="Páginas y Banners">
                 <div class="flex items-center gap-3 min-w-0">
-                    <svg class="w-5 h-5 shrink-0 transition-transform duration-200 group-hover:scale-110 {{ request()->routeIs('admin.pages.*') ? 'text-white' : 'text-slate-400 group-hover:text-orange-400' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg class="w-5 h-5 shrink-0 transition-transform duration-200 group-hover:scale-110 {{ request()->routeIs('admin.pages.*') ? 'text-orange-400' : 'text-slate-400 group-hover:text-orange-400' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
                     </svg>
                     <span x-show="!sidebarCollapsed" x-transition.opacity.duration.200ms class="truncate">Páginas & Banners</span>
                 </div>
                 
-                <span x-show="!sidebarCollapsed" x-transition.opacity.duration.200ms class="text-[9px] uppercase px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-black border border-emerald-500/30">
-                    CMS
-                </span>
-            </a>
+                <div x-show="!sidebarCollapsed" class="flex items-center gap-1.5 shrink-0">
+                    <span class="text-[9px] uppercase px-1.5 py-0.5 rounded bg-orange-500/20 text-orange-400 font-black border border-orange-500/30">
+                        CMS
+                    </span>
+                    <svg class="w-3.5 h-3.5 text-slate-400 transition-transform duration-200" :class="pagesMenuOpen ? 'rotate-180 text-orange-400' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </div>
+            </button>
+
+            <!-- SUBMENÚ DESPLEGABLE EN SIDEBAR -->
+            <div x-show="pagesMenuOpen && !sidebarCollapsed" 
+                 x-transition:enter="transition ease-out duration-150"
+                 x-transition:enter-start="opacity-0 -translate-y-1"
+                 x-transition:enter-end="opacity-100 translate-y-0"
+                 x-transition:leave="transition ease-in duration-100"
+                 x-transition:leave-start="opacity-100 translate-y-0"
+                 x-transition:leave-end="opacity-0 -translate-y-1"
+                 class="pl-4 pr-1 py-1 space-y-1"
+                 style="display: none;">
+                
+                <!-- Sub-ítem Banners -->
+                <a href="{{ route('admin.pages.index', ['tab' => 'banners']) }}"
+                   class="flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs transition-colors {{ request()->routeIs('admin.pages.*') && request('tab', 'banners') === 'banners' ? 'bg-orange-600/30 text-orange-300 font-bold border border-orange-500/40' : 'text-slate-400 hover:text-white hover:bg-slate-800/60' }}">
+                    <span class="w-1.5 h-1.5 rounded-full {{ request()->routeIs('admin.pages.*') && request('tab', 'banners') === 'banners' ? 'bg-orange-400 shadow-xs shadow-orange-400' : 'bg-slate-600' }}"></span>
+                    <span class="truncate">Banners de Inicio</span>
+                </a>
+
+                <!-- Sub-ítem Contacto -->
+                <a href="{{ route('admin.pages.index', ['tab' => 'contacto']) }}"
+                   class="flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs transition-colors {{ request()->routeIs('admin.pages.*') && request('tab') === 'contacto' ? 'bg-orange-600/30 text-orange-300 font-bold border border-orange-500/40' : 'text-slate-400 hover:text-white hover:bg-slate-800/60' }}">
+                    <span class="w-1.5 h-1.5 rounded-full {{ request()->routeIs('admin.pages.*') && request('tab') === 'contacto' ? 'bg-orange-400 shadow-xs shadow-orange-400' : 'bg-slate-600' }}"></span>
+                    <span class="truncate">Contacto & WhatsApp</span>
+                </a>
+
+                <!-- Sub-ítem Nosotros -->
+                <a href="{{ route('admin.pages.index', ['tab' => 'nosotros']) }}"
+                   class="flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs transition-colors {{ request()->routeIs('admin.pages.*') && request('tab') === 'nosotros' ? 'bg-orange-600/30 text-orange-300 font-bold border border-orange-500/40' : 'text-slate-400 hover:text-white hover:bg-slate-800/60' }}">
+                    <span class="w-1.5 h-1.5 rounded-full {{ request()->routeIs('admin.pages.*') && request('tab') === 'nosotros' ? 'bg-orange-400 shadow-xs shadow-orange-400' : 'bg-slate-600' }}"></span>
+                    <span class="truncate">Página Nosotros</span>
+                </a>
+
+                <!-- Sub-ítem Servicios -->
+                <a href="{{ route('admin.pages.index', ['tab' => 'servicios']) }}"
+                   class="flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs transition-colors {{ request()->routeIs('admin.pages.*') && request('tab') === 'servicios' ? 'bg-orange-600/30 text-orange-300 font-bold border border-orange-500/40' : 'text-slate-400 hover:text-white hover:bg-slate-800/60' }}">
+                    <span class="w-1.5 h-1.5 rounded-full {{ request()->routeIs('admin.pages.*') && request('tab') === 'servicios' ? 'bg-orange-400 shadow-xs shadow-orange-400' : 'bg-slate-600' }}"></span>
+                    <span class="truncate">Página Servicios</span>
+                </a>
+
+                <!-- Sub-ítem Redes -->
+                <a href="{{ route('admin.pages.index', ['tab' => 'redes']) }}"
+                   class="flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs transition-colors {{ request()->routeIs('admin.pages.*') && request('tab') === 'redes' ? 'bg-orange-600/30 text-orange-300 font-bold border border-orange-500/40' : 'text-slate-400 hover:text-white hover:bg-slate-800/60' }}">
+                    <span class="w-1.5 h-1.5 rounded-full {{ request()->routeIs('admin.pages.*') && request('tab') === 'redes' ? 'bg-orange-400 shadow-xs shadow-orange-400' : 'bg-slate-600' }}"></span>
+                    <span class="truncate">Redes & Pie de Página</span>
+                </a>
+
+            </div>
         </div>
     </div>
 
