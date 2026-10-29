@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\UploadedFile;
 
 class AdminTest extends TestCase
 {
@@ -38,6 +39,18 @@ class AdminTest extends TestCase
             'short_description' => 'Polo de trabajo',
             'is_featured' => true,
         ]);
+    }
+
+    protected function tearDown(): void
+    {
+        foreach (glob(public_path('images/products/*-360-*.jpg')) as $file) {
+            @unlink($file);
+        }
+        foreach (glob(public_path('images/products/*-modificado-*.jpg')) as $file) {
+            @unlink($file);
+        }
+
+        parent::tearDown();
     }
 
     public function test_guest_is_redirected_to_admin_login(): void
@@ -168,5 +181,70 @@ class AdminTest extends TestCase
         $this->assertEquals('999 888 777', setting('contact_phone'));
         $this->assertEquals('999888777', setting('contact_whatsapp'));
         $this->assertEquals('ventas_nuevas@eutex.com', setting('contact_email'));
+    }
+
+    public function test_admin_can_create_product_with_multiple_images(): void
+    {
+        $user = User::where('email', 'admin@eutex.com')->first();
+        $this->actingAs($user);
+
+        $cat = Category::first();
+
+        $mainFile = UploadedFile::fake()->image('polo_portada.jpg', 600, 600);
+        $galleryFile1 = UploadedFile::fake()->image('polo_costura.jpg', 600, 600);
+        $galleryFile2 = UploadedFile::fake()->image('polo_cuello.jpg', 600, 600);
+
+        $response = $this->post(route('admin.products.store'), [
+            'category_id' => $cat->id,
+            'name' => 'Chaleco Reflectivo Pro 360',
+            'sku' => 'EUT-CHA-360',
+            'image_file' => $mainFile,
+            'gallery_files' => [$galleryFile1, $galleryFile2],
+            'short_description' => 'Chaleco con cintas reflectivas 3M',
+        ]);
+
+        $response->assertRedirect(route('admin.products.index'));
+
+        $product = Product::where('sku', 'EUT-CHA-360')->first();
+        $this->assertNotNull($product);
+        $this->assertNotNull($product->image);
+        $this->assertIsArray($product->gallery);
+        $this->assertCount(3, $product->gallery); // main cover + 2 gallery files
+    }
+
+    public function test_admin_can_update_product_gallery_and_set_cover(): void
+    {
+        $user = User::where('email', 'admin@eutex.com')->first();
+        $this->actingAs($user);
+
+        $cat = Category::first();
+        $product = Product::create([
+            'category_id' => $cat->id,
+            'name' => 'Mameluco Drill Confección',
+            'slug' => 'mameluco-drill-confeccion',
+            'sku' => 'EUT-MAM-001',
+            'image' => 'images/products/mameluco1.png',
+            'gallery' => ['images/products/mameluco1.png', 'images/products/mameluco2.png', 'images/products/mameluco3.png'],
+            'is_active' => true,
+        ]);
+
+        // Change cover to mameluco2.png, remove mameluco3.png, and add a new photo
+        $newGalleryFile = UploadedFile::fake()->image('mameluco_extra.jpg', 600, 600);
+
+        $response = $this->put(route('admin.products.update', $product), [
+            'category_id' => $cat->id,
+            'name' => 'Mameluco Drill Confección Modificado',
+            'main_image_path' => 'images/products/mameluco2.png',
+            'existing_gallery' => ['images/products/mameluco1.png', 'images/products/mameluco2.png'],
+            'gallery_files' => [$newGalleryFile],
+        ]);
+
+        $response->assertRedirect(route('admin.products.index'));
+
+        $product->refresh();
+        $this->assertEquals('images/products/mameluco2.png', $product->image);
+        $this->assertIsArray($product->gallery);
+        $this->assertCount(3, $product->gallery); // mameluco1, mameluco2 + newly uploaded file
+        $this->assertNotContains('images/products/mameluco3.png', $product->gallery);
     }
 }

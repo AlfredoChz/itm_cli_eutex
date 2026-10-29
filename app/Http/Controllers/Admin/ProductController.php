@@ -55,8 +55,11 @@ class ProductController extends Controller
             'description' => ['nullable', 'string'],
             'badge' => ['nullable', 'string', 'max:100'],
             'is_featured' => ['nullable', 'boolean'],
-            'image_file' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:4096'],
+            'image_file' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:5120'],
             'image_url' => ['nullable', 'string'],
+            'gallery_files' => ['nullable', 'array'],
+            'gallery_files.*' => ['image', 'mimes:jpeg,png,jpg,webp', 'max:5120'],
+            'gallery_urls' => ['nullable', 'string'],
             'colors' => ['nullable', 'string'],
             'sizes' => ['nullable', 'string'],
             'features' => ['nullable', 'string'],
@@ -72,16 +75,46 @@ class ProductController extends Controller
             $counter++;
         }
 
+        $destinationPath = public_path('images/products');
+        if (!file_exists($destinationPath)) {
+            mkdir($destinationPath, 0755, true);
+        }
+
+        // 1. Foto Principal
         $imagePath = $validated['image_url'] ?? null;
         if ($request->hasFile('image_file')) {
             $file = $request->file('image_file');
             $fileName = $slug . '-' . time() . '.' . $file->getClientOriginalExtension();
-            $destinationPath = public_path('images/products');
-            if (!file_exists($destinationPath)) {
-                mkdir($destinationPath, 0755, true);
-            }
             $file->move($destinationPath, $fileName);
             $imagePath = '/images/products/' . $fileName;
+        }
+
+        // 2. Fotos de Galería Adicionales
+        $gallery = [];
+        if ($imagePath) {
+            $gallery[] = $imagePath;
+        }
+
+        if ($request->hasFile('gallery_files')) {
+            foreach ($request->file('gallery_files') as $idx => $gFile) {
+                $gName = $slug . '-gal-' . time() . '-' . $idx . '.' . $gFile->getClientOriginalExtension();
+                $gFile->move($destinationPath, $gName);
+                $gallery[] = '/images/products/' . $gName;
+            }
+        }
+
+        if (!empty($validated['gallery_urls'])) {
+            $urls = array_filter(array_map('trim', explode("\n", $validated['gallery_urls'])));
+            foreach ($urls as $u) {
+                if (!empty($u) && !in_array($u, $gallery)) {
+                    $gallery[] = $u;
+                }
+            }
+        }
+
+        $gallery = array_values(array_unique(array_filter($gallery)));
+        if (!$imagePath && !empty($gallery)) {
+            $imagePath = $gallery[0];
         }
 
         $colors = $this->parseList($request->input('colors'));
@@ -98,14 +131,14 @@ class ProductController extends Controller
             'badge' => $validated['badge'] ?? null,
             'is_featured' => $request->boolean('is_featured'),
             'image' => $imagePath,
-            'gallery' => $imagePath ? [$imagePath] : null,
+            'gallery' => !empty($gallery) ? $gallery : ($imagePath ? [$imagePath] : null),
             'colors' => $colors,
             'sizes' => $sizes,
             'features' => $features,
         ]);
 
         return redirect()->route('admin.products.index')
-            ->with('success', 'Producto "' . $validated['name'] . '" creado exitosamente.');
+            ->with('success', 'Producto "' . $validated['name'] . '" creado exitosamente con sus imágenes.');
     }
 
     public function edit(Product $product)
@@ -125,27 +158,72 @@ class ProductController extends Controller
             'description' => ['nullable', 'string'],
             'badge' => ['nullable', 'string', 'max:100'],
             'is_featured' => ['nullable', 'boolean'],
-            'image_file' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:4096'],
+            'image_file' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:5120'],
             'image_url' => ['nullable', 'string'],
+            'main_image_path' => ['nullable', 'string'],
+            'gallery_files' => ['nullable', 'array'],
+            'gallery_files.*' => ['image', 'mimes:jpeg,png,jpg,webp', 'max:5120'],
+            'existing_gallery' => ['nullable', 'array'],
+            'gallery_urls' => ['nullable', 'string'],
             'colors' => ['nullable', 'string'],
             'sizes' => ['nullable', 'string'],
             'features' => ['nullable', 'string'],
         ]);
 
         $slug = !empty($validated['slug']) ? Str::slug($validated['slug']) : Str::slug($validated['name']);
-        
+
+        $destinationPath = public_path('images/products');
+        if (!file_exists($destinationPath)) {
+            mkdir($destinationPath, 0755, true);
+        }
+
+        // 1. Imagen Principal
         $imagePath = $product->image;
         if ($request->hasFile('image_file')) {
             $file = $request->file('image_file');
             $fileName = $slug . '-' . time() . '.' . $file->getClientOriginalExtension();
-            $destinationPath = public_path('images/products');
-            if (!file_exists($destinationPath)) {
-                mkdir($destinationPath, 0755, true);
-            }
             $file->move($destinationPath, $fileName);
             $imagePath = '/images/products/' . $fileName;
+        } elseif (!empty($validated['main_image_path'])) {
+            $imagePath = $validated['main_image_path'];
         } elseif (!empty($validated['image_url'])) {
             $imagePath = $validated['image_url'];
+        }
+
+        // 2. Galería de Fotos (Conserva las fotos existentes que no se hayan eliminado)
+        $gallery = $request->input('existing_gallery', []);
+        if (!is_array($gallery)) {
+            $gallery = [];
+        }
+
+        // Asegurar que la imagen principal esté en la galería
+        if ($imagePath && !in_array($imagePath, $gallery)) {
+            array_unshift($gallery, $imagePath);
+        }
+
+        // Subir fotos adicionales nuevas
+        if ($request->hasFile('gallery_files')) {
+            foreach ($request->file('gallery_files') as $idx => $gFile) {
+                $gName = $slug . '-gal-' . time() . '-' . $idx . '.' . $gFile->getClientOriginalExtension();
+                $gFile->move($destinationPath, $gName);
+                $gallery[] = '/images/products/' . $gName;
+            }
+        }
+
+        // Añadir URLs adicionales si se especificaron
+        if (!empty($validated['gallery_urls'])) {
+            $urls = array_filter(array_map('trim', explode("\n", $validated['gallery_urls'])));
+            foreach ($urls as $u) {
+                if (!empty($u) && !in_array($u, $gallery)) {
+                    $gallery[] = $u;
+                }
+            }
+        }
+
+        $gallery = array_values(array_unique(array_filter($gallery)));
+
+        if (!$imagePath && !empty($gallery)) {
+            $imagePath = $gallery[0];
         }
 
         $colors = $this->parseList($request->input('colors'));
@@ -162,13 +240,14 @@ class ProductController extends Controller
             'badge' => $validated['badge'] ?? null,
             'is_featured' => $request->boolean('is_featured'),
             'image' => $imagePath,
+            'gallery' => !empty($gallery) ? $gallery : null,
             'colors' => $colors,
             'sizes' => $sizes,
             'features' => $features,
         ]);
 
         return redirect()->route('admin.products.index')
-            ->with('success', 'Producto "' . $product->name . '" actualizado exitosamente.');
+            ->with('success', 'Producto "' . $product->name . '" y sus fotos actualizados exitosamente.');
     }
 
     public function toggleFeatured(Product $product)

@@ -34,7 +34,26 @@
             }
         },
         presetBadges: ['Más Vendido', 'Norma ANSI 107', 'Denim 14 oz', '100% Algodón', 'Alta Visibilidad', 'Triple Costura'],
-        previewImage: '{{ $product->image ? asset($product->image) : '' }}'
+        previewImage: '{{ $product->image ? asset($product->image) : '' }}',
+        mainImagePath: '{{ $product->image ?? '' }}',
+        existingGallery: {{ json_encode(!empty($product->gallery) ? array_values(array_unique(array_filter($product->gallery))) : ($product->image ? [$product->image] : [])) }},
+        galleryPreviews: [],
+        removeGalleryItem(idx) {
+            this.existingGallery.splice(idx, 1);
+        },
+        setAsCover(img) {
+            this.mainImagePath = img;
+            this.previewImage = img.startsWith('http') ? img : ('{{ asset('') }}' + img.replace(/^\//, ''));
+        },
+        handleGallerySelect(e) {
+            this.galleryPreviews = [];
+            const files = e.target.files;
+            if (files) {
+                Array.from(files).forEach(f => {
+                    this.galleryPreviews.push(URL.createObjectURL(f));
+                });
+            }
+        }
      }">
 
     <form method="POST" action="{{ route('admin.products.update', $product) }}" enctype="multipart/form-data" class="space-y-4 sm:space-y-6">
@@ -45,58 +64,175 @@
         <input type="hidden" name="colors" :value="selectedColors.join(', ')">
         <input type="hidden" name="sizes" :value="selectedSizes.join(', ')">
 
-        <!-- BLOQUE 1: FOTOGRAFÍA PRINCIPAL -->
-        <div class="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-xs space-y-4">
+        <!-- BLOQUE 1: FOTOGRAFÍAS (PORTADA Y GALERÍA MULTI-IMAGEN) -->
+        <div class="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-xs space-y-6">
             <div class="flex items-center justify-between border-b border-slate-100 pb-3">
                 <div>
-                    <h3 class="text-sm font-bold uppercase tracking-wider text-slate-900">1. Fotografía de la Prenda</h3>
-                    <p class="text-xs text-slate-500">Puedes cambiar la foto subiendo una nueva o mantener la actual</p>
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-slate-900">1. Fotografías & Galería de la Prenda</h3>
+                    <p class="text-xs text-slate-500">Administra la foto principal de portada y múltiples fotos adicionales para el producto</p>
                 </div>
-                <span class="text-[11px] font-bold text-orange-600 bg-orange-50 px-2.5 py-1 rounded-lg">Foto</span>
+                <span class="text-[11px] font-bold text-orange-600 bg-orange-50 px-2.5 py-1 rounded-lg">Fotos</span>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
-                <!-- Dropzone táctil -->
-                <label class="flex flex-col items-center justify-center p-6 border-2 border-dashed border-slate-300 hover:border-orange-500 rounded-2xl cursor-pointer bg-slate-50/70 hover:bg-orange-50/20 transition-all text-center">
-                    <div class="w-12 h-12 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center mb-2 shadow-xs">
-                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
+            <!-- 1.1 FOTO PRINCIPAL / PORTADA -->
+            <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-800">
+                        Foto Principal de Portada
+                    </label>
+                    <span class="text-[11px] text-slate-400">Imagen principal visible en catálogo y ficha</span>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
+                    <!-- Dropzone táctil para cambiar foto principal -->
+                    <label class="flex flex-col items-center justify-center p-5 border-2 border-dashed border-slate-300 hover:border-orange-500 rounded-2xl cursor-pointer bg-slate-50/70 hover:bg-orange-50/20 transition-all text-center">
+                        <div class="w-10 h-10 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center mb-1.5 shadow-xs">
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                        </div>
+                        <span class="text-xs font-bold text-slate-900 block">Tocar para cambiar foto de portada</span>
+                        <span class="text-[10px] text-slate-400 mt-0.5">Deja vacío para conservar la foto actual</span>
+                        <input type="file" 
+                               name="image_file" 
+                               accept="image/*"
+                               @change="const file = $event.target.files[0]; if(file) { previewImage = URL.createObjectURL(file); }" 
+                               class="hidden">
+                    </label>
+
+                    <!-- Vista Previa de Portada Actual -->
+                    <div class="flex items-center justify-center p-3 bg-slate-50 rounded-2xl border border-slate-200 min-h-[130px]">
+                        <template x-if="previewImage">
+                            <div class="relative group">
+                                <img :src="previewImage" alt="Vista previa portada" class="h-28 object-contain rounded-xl shadow-xs">
+                                <span class="absolute bottom-1 right-1 px-2 py-0.5 rounded bg-orange-600 text-white text-[9px] font-bold">
+                                    Portada Activa
+                                </span>
+                            </div>
+                        </template>
+                        <template x-if="!previewImage">
+                            <div class="text-center text-slate-400 py-3">
+                                <span class="text-xs">Sin fotografía asignada</span>
+                            </div>
+                        </template>
                     </div>
-                    <span class="text-xs font-bold text-slate-900 block">Tocar para cambiar fotografía</span>
-                    <span class="text-[11px] text-slate-400 mt-0.5">Deja vacío para conservar la foto actual</span>
-                    <input type="file" 
-                           name="image_file" 
-                           accept="image/*"
-                           @change="const file = $event.target.files[0]; if(file) { previewImage = URL.createObjectURL(file); }" 
-                           class="hidden">
-                </label>
+                </div>
 
-                <!-- Vista Previa -->
-                <div class="flex items-center justify-center p-3 bg-slate-50 rounded-2xl border border-slate-200 min-h-[140px]">
-                    <template x-if="previewImage">
-                        <div class="relative group">
-                            <img :src="previewImage" alt="Vista previa" class="h-32 object-contain rounded-xl shadow-xs">
-                        </div>
-                    </template>
-                    <template x-if="!previewImage">
-                        <div class="text-center text-slate-400 py-4">
-                            <span class="text-xs">Sin fotografía asignada</span>
-                        </div>
-                    </template>
+                <div>
+                    <label for="image_url" class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">
+                        Ruta / URL de la imagen de portada
+                    </label>
+                    <input type="text" 
+                           name="image_url" 
+                           id="image_url" 
+                           x-model="mainImagePath"
+                           class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-300 text-xs font-mono focus:ring-2 focus:ring-orange-500 focus:outline-none">
                 </div>
             </div>
 
-            <div>
-                <label for="image_url" class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">
-                    Ruta / URL actual de la imagen
-                </label>
-                <input type="text" 
-                       name="image_url" 
-                       id="image_url" 
-                       value="{{ old('image_url', $product->image) }}" 
-                       class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-300 text-xs font-mono focus:ring-2 focus:ring-orange-500 focus:outline-none">
+            <!-- 1.2 GALERÍA DE FOTOS EXISTENTES Y GESTIÓN -->
+            <div class="pt-4 border-t border-slate-100 space-y-3">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-800">
+                            Fotos Actuales en la Galería
+                        </label>
+                        <p class="text-[11px] text-slate-500">Puedes eliminar fotos que ya no desees o hacer clic en "Hacer Portada" para definir cuál se muestra primero</p>
+                    </div>
+                    <span class="text-[11px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-lg" x-text="existingGallery.length + ' fotos en galería'">
+                        0 fotos
+                    </span>
+                </div>
+
+                <!-- Inputs ocultos para sincronizar la galería existente -->
+                <template x-for="(img, idx) in existingGallery" :key="idx">
+                    <input type="hidden" name="existing_gallery[]" :value="img">
+                </template>
+
+                <!-- Cuadrícula de fotos existentes -->
+                <template x-if="existingGallery.length > 0">
+                    <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-3 p-3 bg-slate-50 rounded-2xl border border-slate-200">
+                        <template x-for="(img, idx) in existingGallery" :key="idx">
+                            <div class="relative group bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs flex flex-col">
+                                <div class="aspect-square w-full overflow-hidden bg-slate-100 flex items-center justify-center p-1">
+                                    <img :src="img.startsWith('http') ? img : ('{{ asset('') }}' + img.replace(/^\//, ''))" 
+                                         class="w-full h-full object-cover rounded-lg">
+                                </div>
+                                <div class="p-1.5 flex items-center justify-between gap-1 bg-white border-t border-slate-100">
+                                    <button type="button" 
+                                            @click="setAsCover(img)" 
+                                            :class="mainImagePath === img ? 'bg-orange-600 text-white font-bold' : 'bg-slate-100 text-slate-700 hover:bg-orange-50 hover:text-orange-600'"
+                                            class="text-[9px] px-1.5 py-0.5 rounded transition-colors"
+                                            :title="mainImagePath === img ? 'Foto de Portada' : 'Establecer como Portada'">
+                                        <span x-text="mainImagePath === img ? '★ Portada' : 'Portada'"></span>
+                                    </button>
+
+                                    <button type="button" 
+                                            @click="removeGalleryItem(idx)" 
+                                            class="p-1 rounded text-rose-500 hover:text-white hover:bg-rose-600 transition-colors" 
+                                            title="Eliminar esta foto">
+                                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+                <template x-if="existingGallery.length === 0">
+                    <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 text-center text-xs text-slate-400">
+                        No hay fotos adicionales en la galería de este producto.
+                    </div>
+                </template>
+
+                <!-- 1.3 SUBIR MÁS FOTOS NUEVAS A LA GALERÍA -->
+                <div class="pt-2">
+                    <label class="flex flex-col items-center justify-center p-5 border-2 border-dashed border-amber-300 hover:border-orange-500 rounded-2xl cursor-pointer bg-amber-50/40 hover:bg-amber-50/70 transition-all text-center">
+                        <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center mb-1.5 shadow-xs">
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                            </svg>
+                        </div>
+                        <span class="text-xs font-bold text-slate-900 block">+ Agregar Más Fotos a la Galería (Selecciona una o varias)</span>
+                        <span class="text-[10px] text-slate-500 mt-0.5">Puedes subir varias fotos a la vez desde tu celular o computadora</span>
+                        <input type="file" 
+                               name="gallery_files[]" 
+                               multiple 
+                               accept="image/*"
+                               @change="handleGallerySelect($event)" 
+                               class="hidden">
+                    </label>
+
+                    <!-- Previsualización de las fotos nuevas seleccionadas -->
+                    <template x-if="galleryPreviews.length > 0">
+                        <div class="mt-3 p-3 bg-emerald-50/60 rounded-2xl border border-emerald-200">
+                            <span class="text-[11px] font-bold text-emerald-800 block mb-2">
+                                Nuevas fotos listas para subir al guardar:
+                            </span>
+                            <div class="grid grid-cols-3 sm:grid-cols-6 gap-3">
+                                <template x-for="(img, idx) in galleryPreviews" :key="idx">
+                                    <div class="relative aspect-square rounded-xl overflow-hidden bg-white border border-emerald-300 shadow-xs">
+                                        <img :src="img" class="w-full h-full object-cover">
+                                        <span class="absolute top-1 left-1 px-1.5 py-0.5 rounded bg-emerald-600 text-white text-[9px] font-bold" x-text="'+' + (idx + 1)"></span>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- Rutas / URLs adicionales de fotos (opcional) -->
+                <div>
+                    <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">
+                        O agrega URLs/Rutas adicionales de fotos (Una por línea):
+                    </label>
+                    <textarea name="gallery_urls" 
+                              rows="2" 
+                              placeholder="/images/products/polo-alta-visibilidad-reflectivo.jpg"
+                              class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-300 text-xs font-mono focus:ring-2 focus:ring-orange-500 focus:outline-none"></textarea>
+                </div>
             </div>
         </div>
 

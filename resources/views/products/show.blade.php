@@ -21,22 +21,30 @@
 </div>
 
 <!-- DETALLE DEL PRODUCTO -->
+@php
+    $galleryList = array_values(array_unique(array_filter(array_merge(
+        $product->image ? [$product->image] : [],
+        is_array($product->gallery) ? $product->gallery : []
+    ))));
+    $coverImage = !empty($galleryList) ? $galleryList[0] : ($product->image ?: 'images/placeholder-product.svg');
+@endphp
+
 <div class="py-12 bg-white" 
      x-data="{ 
-        activeImage: '{{ asset($product->image) }}',
+        activeImage: '{{ asset($coverImage) }}',
         selectedColor: '{{ !empty($product->colors) ? $product->colors[0] : '' }}',
         selectedSize: '{{ !empty($product->sizes) ? $product->sizes[0] : '' }}',
         quantity: 24,
         activeTab: 'descripcion',
         getWhatsAppUrl() {
             let msg = '¡Hola EUTEX! Deseo cotizar el siguiente producto:\n';
-            msg += '• *Producto:* {{ $product->name }}\n';
-            msg += '• *SKU:* {{ $product->sku }}\n';
+            msg += '• *Producto:* {{ addslashes($product->name) }}\n';
+            msg += '• *SKU:* {{ addslashes($product->sku) }}\n';
             if (this.selectedColor) msg += '• *Color:* ' + this.selectedColor + '\n';
             if (this.selectedSize) msg += '• *Talla:* ' + this.selectedSize + '\n';
             msg += '• *Cantidad estimada:* ' + this.quantity + ' unidades\n';
             msg += 'Por favor envíenme lista de precios y tiempos de entrega.';
-            return 'https://wa.me/51920783202?text=' + encodeURIComponent(msg);
+            return 'https://wa.me/{{ preg_replace('/[^0-9]/', '', setting('contact_whatsapp', '51920783202')) }}?text=' + encodeURIComponent(msg);
         }
      }">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -60,15 +68,25 @@
                 </div>
 
                 <!-- Miniaturas de Galería -->
-                @if(!empty($product->gallery) && count($product->gallery) > 1)
-                    <div class="flex items-center gap-3 overflow-x-auto pb-2">
-                        @foreach($product->gallery as $img)
-                            <button @click="activeImage = '{{ asset($img) }}'" 
-                                    :class="activeImage === '{{ asset($img) }}' ? 'border-amber-500 ring-2 ring-amber-200' : 'border-slate-200'"
-                                    class="w-20 h-20 rounded-xl overflow-hidden border-2 bg-slate-50 p-1 shrink-0 focus:outline-none transition-all">
-                                <img src="{{ asset($img) }}" class="w-full h-full object-cover rounded-lg">
-                            </button>
-                        @endforeach
+                @if(count($galleryList) > 1)
+                    <div>
+                        <div class="text-xs font-bold text-slate-500 mb-2 flex items-center justify-between">
+                            <span>Galería de fotos ({{ count($galleryList) }})</span>
+                            <span class="text-[10px] text-slate-400 font-normal">Haz clic para ampliar</span>
+                        </div>
+                        <div class="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-thin">
+                            @foreach($galleryList as $index => $img)
+                                <button type="button"
+                                        @click="activeImage = '{{ asset($img) }}'" 
+                                        :class="activeImage === '{{ asset($img) }}' ? 'border-amber-500 ring-2 ring-amber-400 shadow-md scale-105' : 'border-slate-200 hover:border-slate-300 opacity-80 hover:opacity-100'"
+                                        class="relative w-20 h-20 rounded-xl overflow-hidden border-2 bg-slate-50 p-1 shrink-0 focus:outline-none transition-all duration-200 group">
+                                    <img src="{{ asset($img) }}" alt="{{ $product->name }} foto {{ $index + 1 }}" class="w-full h-full object-cover rounded-lg">
+                                    <span class="absolute bottom-1 right-1 px-1.5 py-0.2 rounded text-[9px] font-bold bg-slate-900/70 text-white">
+                                        #{{ $index + 1 }}
+                                    </span>
+                                </button>
+                            @endforeach
+                        </div>
                     </div>
                 @endif
 
