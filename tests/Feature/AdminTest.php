@@ -279,4 +279,26 @@ class AdminTest extends TestCase
         $this->assertCount(3, $product->gallery); // mameluco1, mameluco2 + newly uploaded file
         $this->assertNotContains('images/products/mameluco3.png', $product->gallery);
     }
+
+    public function test_home_and_admin_display_all_active_banners(): void
+    {
+        $user = User::where('email', 'admin@eutex.com')->first();
+        $this->actingAs($user);
+
+        // Verify admin banners tab renders all 4 banners
+        $adminRes = $this->get('/admin/paginas?tab=banners');
+        $adminRes->assertStatus(200);
+        $adminRes->assertSee('Fabricantes Directos de Uniformes Industriales');
+        $adminRes->assertSee('Indumentaria de Alta Visibilidad & Minería Pesada');
+        $adminRes->assertSee('Polos Industriales & Bordados Computarizados');
+        $adminRes->assertSee('Dotación Corporativa Integral & Suministro de EPP');
+
+        // Verify home page loads banners in slides data
+        $homeRes = $this->get('/');
+        $homeRes->assertStatus(200);
+        $homeRes->assertSee('banner_mineria_visibilidad.jpg');
+        $homeRes->assertSee('banner_confeccion_polos.jpg');
+        $homeRes->assertSee('banner_dotacion_epp.jpg');
+    }
 }
+

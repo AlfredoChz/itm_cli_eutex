@@ -26,7 +26,34 @@ class PageSettingController extends Controller
                 'link_text' => 'Cotizar al WhatsApp',
                 'badge' => 'Gamarra • Lima - Perú',
                 'is_active' => true,
-            ]
+            ],
+            [
+                'image' => '/images/eutex/banner_mineria_visibilidad.jpg',
+                'title' => 'Indumentaria de Alta Visibilidad & Minería Pesada',
+                'subtitle' => 'Overoles, mamelucos y casacas térmicas con cintas reflectivas 3M certificadas ANSI/ISEA.',
+                'link' => '/productos?categoria=mamelucos-overoles',
+                'link_text' => 'Ver Línea Minera',
+                'badge' => 'Minería & Construcción • Normas 3M',
+                'is_active' => true,
+            ],
+            [
+                'image' => '/images/eutex/banner_confeccion_polos.jpg',
+                'title' => 'Polos Industriales & Bordados Computarizados',
+                'subtitle' => '100% Algodón peinado 24/1 y 30/1 en más de 10 colores con bordado de alta precisión.',
+                'link' => '/productos?categoria=polos-industriales',
+                'link_text' => 'Ver Polos Industriales',
+                'badge' => 'Stock Permanente • 10 Colores',
+                'is_active' => true,
+            ],
+            [
+                'image' => '/images/eutex/banner_dotacion_epp.jpg',
+                'title' => 'Dotación Corporativa Integral & Suministro de EPP',
+                'subtitle' => 'Pantalones cargo, jeans 14 oz, cascos, lentes y calzado de seguridad para su empresa.',
+                'link' => 'https://wa.me/51920783202?text=Hola%20EUTEX,%20deseo%20una%20cotizacion%20de%20dotacion%20completa%20y%20EPP',
+                'link_text' => 'Solicitar Cotización',
+                'badge' => 'Dotación Completa • Envíos a Todo el Perú',
+                'is_active' => true,
+            ],
         ]);
 
         // Contacto

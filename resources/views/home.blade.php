@@ -24,28 +24,23 @@
         $slides = [
             [
                 'image' => asset('images/eutex/banner_principal.png'),
-                'alt' => 'EUTEX Uniformes Industriales - Catálogo Oficial',
-                'url' => 'https://wa.me/' . setting('contact_whatsapp', '51920783202') . '?text=' . urlencode(setting('contact_whatsapp_text', 'Hola EUTEX, deseo cotizar uniformes industriales.')),
+                'alt' => 'EUTEX - Fabricantes Directos de Uniformes Industriales',
+                'url' => 'https://wa.me/' . setting('contact_whatsapp', '51920783202') . '?text=' . urlencode(setting('contact_whatsapp_text', 'Hola EUTEX, deseo cotizar uniformes industriales al por mayor.')),
             ],
             [
-                'image' => asset('images/eutex/polos_manga_larga.png'),
-                'alt' => 'Polos Manga Larga Cuello Redondo - 10 Colores',
-                'url' => route('products.show', 'polo-manga-larga-industrial-cuello-redondo'),
+                'image' => asset('images/eutex/banner_mineria_visibilidad.jpg'),
+                'alt' => 'Indumentaria de Alta Visibilidad & Minería Pesada',
+                'url' => url('/productos?categoria=mamelucos-overoles'),
             ],
             [
-                'image' => asset('images/eutex/chalecos_seguridad.png'),
-                'alt' => 'Chalecos de Seguridad y Tipo Geólogo Multibolsillos',
-                'url' => route('products.show', 'chaleco-seguridad-tipo-geologo-multibolsillos'),
+                'image' => asset('images/eutex/banner_confeccion_polos.jpg'),
+                'alt' => 'Polos Industriales & Bordados Computarizados',
+                'url' => url('/productos?categoria=polos-industriales'),
             ],
             [
-                'image' => asset('images/eutex/jeans_industriales.png'),
-                'alt' => 'Jeans Industriales 14 oz con Cinta Reflectiva',
-                'url' => route('products.show', 'pantalon-jean-industrial-14oz-cinta-reflectiva'),
-            ],
-            [
-                'image' => asset('images/eutex/tarjeta_contacto.png'),
-                'alt' => 'Atención al Cliente EUTEX Gamarra',
-                'url' => 'https://wa.me/' . setting('contact_whatsapp', '51920783202') . '?text=' . urlencode(setting('contact_whatsapp_text', 'Hola EUTEX, deseo información y cotización.')),
+                'image' => asset('images/eutex/banner_dotacion_epp.jpg'),
+                'alt' => 'Dotación Corporativa Integral & Suministro de EPP',
+                'url' => 'https://wa.me/' . setting('contact_whatsapp', '51920783202') . '?text=' . urlencode('Hola EUTEX, deseo una cotización de dotación completa y EPP.'),
             ]
         ];
     }
