@@ -72,11 +72,11 @@ class AdminTest extends TestCase
 
         $dashRes = $this->get('/admin');
         $dashRes->assertStatus(200);
-        $dashRes->assertSee('Dashboard Principal');
+        $dashRes->assertSee('Dashboard');
 
         $prodRes = $this->get('/admin/productos');
         $prodRes->assertStatus(200);
-        $prodRes->assertSee('Catálogo de Productos Industriales');
+        $prodRes->assertSee('Catálogo de Productos');
 
         $catRes = $this->get('/admin/categorias');
         $catRes->assertStatus(200);

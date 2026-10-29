@@ -89,11 +89,11 @@
             </div>
         </div>
 
-        <div class="flex items-center justify-end gap-3">
-            <a href="{{ route('admin.categories.index') }}" class="px-5 py-2.5 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-100 font-bold text-xs transition-colors">
+        <div class="flex flex-col sm:flex-row items-center justify-end gap-3 pt-2">
+            <a href="{{ route('admin.categories.index') }}" class="w-full sm:w-auto text-center px-5 py-3 rounded-2xl border border-slate-300 text-slate-700 hover:bg-slate-100 font-bold text-xs transition-colors">
                 Cancelar
             </a>
-            <button type="submit" class="px-6 py-2.5 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs shadow-lg shadow-orange-600/30 transition-all">
+            <button type="submit" class="w-full sm:w-auto px-7 py-3 rounded-2xl bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs sm:text-sm shadow-xl shadow-orange-600/30 transition-all active:scale-95">
                 Crear Categoría
             </button>
         </div>
